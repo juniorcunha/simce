@@ -1,0 +1,107 @@
+{% import  'Core/Views/components.twig.html' as ui %}
+
+<div class="progress progress-striped active">
+	<div id="progress-export" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+		0%
+	</div>
+</div>
+<center><img src="assets/img/loader.gif">&nbsp;&nbsp;<span id="text-export">Iniciando...</span></center>
+<br>
+<center><i><small>
+	<table>
+		<tr>
+			<td>Arquivo: </td>
+			<td id="name-export"></td>
+		</tr>
+		<tr>
+			<td>Registros: </td>
+			<td><span id="current-export">0</span> registro(s) de <span id="total-export">{{ content.total }}</span></td>
+		</tr>
+		<tr>
+			<td>Tamanho: </td>
+			<td id="size-export"></td>
+		</tr>
+	</table>
+</small></center>
+
+<!-- Ajusta os itens de navegação -->
+<script>
+	
+	// Botão voltar
+	$(".btn-prev").removeClass("hidden").off().on( 'click', function() {
+		if (SiMCE.functions.hasOwnProperty("cancelDownload"))
+			SiMCE.functions.cancelDownload = 1;
+		SiMCE.functions.loadMenu()
+	});
+	// Botão avançar
+	$(".btn-next").addClass("hidden");
+	// Botão gerar
+	$(".btn-run").addClass("hidden");
+
+	// Inicia o processo de exportação
+	var binds     = "{{ content.binds }}";
+	var statement = "{{ content.statement }}";
+	var proc      = "{{ proc }}";
+	var opts      = "{{ data }}";
+	var total     = {{ content.total }};
+	if (SiMCE.functions.hasOwnProperty("cancelDownload"))
+		SiMCE.functions.cancelDownload = 0;
+	SiMCE.ajaxRequest(
+		"POST",
+		SiMCE.moduleURL + "gen_interactive_report/?operacao=" + SiMCE.getOperacao(),
+		{ total: total, binds: binds, statement: statement, opts: opts, proc: proc },
+		function( data, textStatus, jqXHR ) {
+			if ( data.success ) {
+				getStatus( proc );
+			}
+		}
+	);
+
+	// Inicia o loop para verificação do status
+	function getStatus( proc ) {
+
+		var url = "/simce/interceptacoes/statusExport/";
+		SiMCE.ajaxRequest(
+			"POST",
+			url,
+			{ proc: proc },
+			function( data, textStatus, jqXHR ) {
+				if (data.success === true) {
+
+					if (data.content === null || !data.content.hasOwnProperty('text')) {
+						setTimeout( function() {
+							getStatus( proc );
+						},1000);
+						return;
+					}
+
+					// Atualiza os textos
+					$("#text-export").text( data.content.text );
+					$("#name-export").text( data.content.file );
+					$("#current-export").text( data.content.current );
+					$("#size-export").text( data.content.size );
+
+					// Atualiza a barra de progresso
+					var perc = parseInt( (data.content.current * 100) / total );
+					$("#progress-export").attr("aria-valuenow", perc);
+					$("#progress-export").width(perc + "%");
+					$("#progress-export").html(perc + "%");
+
+					// Verifica se continua verificando o status
+					if ( data.content.status == "p" && SiMCE.functions.hasOwnProperty("cancelDownload") && SiMCE.functions.cancelDownload == 0) {
+						setTimeout( function() {
+							getStatus( proc );
+						},1000);
+					} else if ( data.content.status == "c" ) {
+
+						// Força o download
+						window.location = "/simce/cache/" + data.content.file;
+
+					}
+				}
+			}
+		);
+
+	}
+
+</script>

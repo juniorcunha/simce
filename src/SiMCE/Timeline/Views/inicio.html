@@ -1,0 +1,10 @@
+<small>
+	<b>Vara:&nbsp;</b>{{ obj.get('vara') }}<br>
+	<b>Autos:&nbsp;</b>{{ obj.get('autos') }}
+</small>
+<hr>
+<p>
+	<small>
+		<b>Alvos:&nbsp;</b>{% for alvo in obj.bean.ownAlvos %}{% if not loop.last %}{{ alvo.nome }}, {% else %}{{ alvo.nome }}{% endif %}{% endfor %}
+	</small>
+</p>

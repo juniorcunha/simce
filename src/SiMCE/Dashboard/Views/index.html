@@ -1,0 +1,271 @@
+{% extends 'Core/Views/modules.twig.html' %}
+{% import  'Core/Views/components.twig.html' as ui %}
+
+{% block title %}Dashboard{% endblock %}
+{% block description %}Estatísticas e informações gerenciais{% endblock %}
+
+{% block content %}
+
+	<!-- Abas -->
+	<ul class="nav nav-tabs nav-tabs-form">
+		<li><a href="#form-estatisticas" data-toggle="tab"><span class="cus-chart-curve"></span> Estatísticas</a></li>
+		<li><a href="#form-geral" data-toggle="tab"><span class="cus-table"></span> Informações Gerais</a></li>
+		<li><a href="#form-usuarios" data-toggle="tab"><span class="cus-status-online"></span> Usuários Ativos</a></li>
+		{% if app.user.isAdmin() %}
+			<li><a href="#form-alocacoes" data-toggle="tab"><span class="cus-plugin-go"></span> Alocações Ativas</a></li>
+		{% endif %}
+	</ul>
+
+	<!-- Conteúdo das Abas -->
+	<div class="tab-content">
+		
+		<!-- Geral -->
+		<div class="tab-pane" id="form-geral"  style="padding-top: 10px;">
+
+			<table border='0' style='width: 100%;'>
+				<tr>
+					<!-- Coluna 1 -->
+					<td valign='top'>
+						<table border='0' style='width: 100%;'>
+							<!-- Detalhes do Sistema -->
+							<tr>
+								<td>
+									<div class="panel panel-default" style="height: 200px;">
+										<div class="panel-heading"><span class="cus-application-view-icons"></span> Detalhes do Sistema</div>
+										<div class="panel-body" style="padding: 20px;">
+											<table border='0'>
+												<tr>
+													<td><strong>Processador:</strong>&nbsp;&nbsp;&nbsp;</td>
+													<td>{{ cpu_model }}</td>
+												</tr>
+												<tr>
+													<td><strong>Capacidade de Memória:</strong>&nbsp;&nbsp;&nbsp;</td>
+													<td>{{ memory_size }}</td>
+												</tr>
+												<tr>
+													<td><strong>Capacidade de Disco:</strong>&nbsp;&nbsp;&nbsp;</td>
+													<td>{{ disk_size }}</td>
+												</tr>
+											</table>
+										</div>
+									</div>
+								</td>
+
+							</tr>
+							<!-- Status dos Serviços -->
+							<tr>
+								<td>
+									<div class="panel panel-default" style="height: 208px; margin-top: -15px;">
+										<div class="panel-heading"><span class="cus-application-view-tile"></span> Status dos Serviços</div>
+										<div class="panel-body" style="padding: 20px;">
+											<table border='0'>
+												<tr>
+													<td><strong>Fluxo E1:</strong>&nbsp;&nbsp;&nbsp;</td>
+													<td>
+														{% for obj in e1_status %}
+															{% if obj.get('status') == 0 %}
+																<span class="cus-bullet-green"></span> Link {{ loop.index }} - {{ obj.get('info') }}
+															{% else %}
+																<span class="cus-bullet-red"></span> Link {{ loop.index }} - {{ obj.get('info') }}
+															{% endif %}
+															{% if not loop.last %}/{% endif %}
+														{% endfor %}
+													</td>
+												</tr>
+												<tr>
+													<td><strong>Acesso à Internet:</strong>&nbsp;&nbsp;&nbsp;</td>
+													<td>
+														{% if int_status.status == 0 %}
+															<span class="cus-bullet-green"></span> OK - Tempo de Resposta: {{ int_status.latencia }} ms / Perda de Pacotes: {{ int_status.perda_pacotes }}%
+														{% else %}
+															<span class="cus-bullet-red"></span> Crítico - Tempo de Resposta: {{ int_status.latencia }} ms / Perda de Pacotes: {{ int_status.perda_pacotes }}%
+														{% endif %}
+													</td>
+												</tr>
+												<tr>
+													<td><strong>Sinal de Celular:</strong>&nbsp;&nbsp;&nbsp;</td>
+													<td>
+														{% for obj in gsm_status %}
+															{% if obj.get('sinal') > 10 %}
+																<span class="cus-bullet-green"></span> {{ obj.get('recursos').nome }} - {{ obj.get('sinal') }}%
+															{% else %}
+																<span class="cus-bullet-red"></span> {{ obj.get('recursos').nome }} - {{ obj.get('sinal') }}%
+															{% endif %}
+															{% if not loop.last %}/{% endif %}
+														{% endfor %}
+													</td>
+												</tr>
+											</table>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</td>
+					<!-- Coluna 2 -->
+					<td valign='top'>
+						<table border='0' style='width: 100%;'>
+							<tr>
+								<td>
+									<div class="panel panel-default">
+										<div class="panel-heading"><span class="cus-application-view-gallery"></span> Performance</div>
+										<div class="panel-body" style="padding-top: -15px; padding-bottom: -15px;">
+											<table border='0' style='width: 100%;'>
+												<!-- CPU -->
+												<tr>
+													<td style='width: 200px;'>
+														<div id="dashboard-general-cpu" style="width: 200px; height: 110px; margin-left: 30px;"></div>
+													</td>
+													<td>
+														<b>Utilização de CPU:</b><br>
+														<span id="dashboard-general-cpu-value" class="cus-bullet-green">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-%</span>
+													</td>
+												</tr>
+												<!-- Memória -->
+												<tr>
+													<td style='width: 200px;'>
+														<div id="dashboard-general-memory" style="width: 200px; height: 110px; margin-left: 30px;"></div>
+													</td>
+													<td>
+														<b>Utilização de Memória / Swap:</b><br>
+														<span id="dashboard-general-memory-value" class="cus-bullet-green">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-%</span>
+													</td>
+												</tr>
+												<!-- Disco -->
+												<tr>
+													<td style='width: 300px; height: 120px;'>
+														<div id="dashboard-general-disk" style="width: 300px; height: 70px; margin-left: 30px;"></div>
+													</td>
+													<td>
+														<b>Utilização de Disco:</b><br>
+														<span id="dashboard-general-disk-value-avail" class="cus-bullet-green">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-%</span><br>
+														<span id="dashboard-general-disk-value-used" class="cus-bullet-red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-%</span>
+													</td>
+												</tr>
+											</table>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+			
+		</div>
+		
+		<!-- Histórico -->
+		<div class="tab-pane" id="form-estatisticas" style="padding-top: 10px;">
+			
+			<table border='0' style='width: 100%;'>
+				<tr>
+					<td valign='top' style='width: 50%;'>
+						<div class="panel panel-default" style="height: 220px;">
+							<div class="panel-heading"><span class="cus-lightning-go"></span> Interceptações Ativas</div>
+							<div class="panel-body">
+								<div id="dashboard-statistics-active-calls" style="height: 160px;"></div>
+							</div>
+						</div>
+					</td>
+					<td valign='top' style='width: 50%;'>
+						<div class="panel panel-default" style="height: 220px;">
+							<div class="panel-heading"><span class="cus-chart-line"></span> Histórico de Ligações (Últimas 24 horas)</div>
+							<div class="panel-body">
+								<div id="dashboard-statistics-call-history" style="height: 160px;"></div>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td valign='top' style='width: 50%;'>
+						<div class="panel panel-default" style="height: 220px; margin-top: -20px;">
+							<div class="panel-heading"><span class="cus-chart-line"></span> Histórico de Desvios de SMS (Últimas 24 horas)</div>
+							<div class="panel-body">
+								<div id="dashboard-statistics-sms-history" style="height: 160px;"></div>
+							</div>
+						</div>
+					</td>
+					<td valign='top' style='width: 50%;'>
+						<div class="panel panel-default" style="height: 220px; margin-top: -20px;">
+							<div class="panel-heading"><span class="cus-chart-line"></span> Histórico de Desvios de Dados (Últimas 24 horas)</div>
+							<div class="panel-body">
+								<div id="dashboard-statistics-data-history" style="height: 160px;"></div>
+							</div>
+						</div>
+					</td>
+				</tr>
+			</table>
+			
+		</div>
+		
+		<!-- Usuários Ativos -->
+		<div class="tab-pane" id="form-usuarios"  style="padding-top: 10px;">
+			
+			<table id="datagrid" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered table-condensed">
+				<thead>
+					<tr>
+						<th>Nome</th>
+						<th>IP</th>
+						<th>Login</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			
+		</div>
+
+		<!-- Alocações Ativas -->
+		<div class="tab-pane" id="form-alocacoes"  style="padding-top: 10px;">
+
+			<table id="datagrid" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered table-condensed">
+				<thead>
+					<tr>
+						<th rowspan="2" valign="top">Alvo</th>
+						<th rowspan="2" valign="top">Responsáveis</th>
+						<th colspan="5"><center>Alocações</center></th>
+					</tr>
+					<tr>
+						<th>Início</th>
+						<th>Fim</th>
+						<th>Recurso</th>
+						<th>Identificação</th>
+						<th>Desvio</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for row in rows %}
+					<tr>
+						<td rowspan="{{ row.alocacoes|length }}">{{ row.nome }}</td>
+						<td rowspan="{{ row.alocacoes|length }}">{{ row.permissoes }}</td>
+						{% for aloc in row.alocacoes %}
+							{% if loop.index0 != 0 %}<tr>{% endif %}
+								<td>{{ aloc.inicio }}</td>
+								<td>{{ aloc.fim }}</td>
+								<td>{{ aloc.recurso }}</td>
+								<td>{{ aloc.identificacao }}</td>
+								<td>{{ aloc.desvio }} {% if aloc.desvio_via == 'E' %}via E1{% endif %}</td>
+							</tr>	
+						{% endfor %}
+
+					{% else %}
+						<tr>
+							<td colspan="7"><center>Nenhuma alocação ativa</center></td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+
+		</div>
+		
+	</div>
+
+	<!-- Ajusta o grid -->
+	<script>
+		
+		// Seleciona primeira aba
+		$(".nav-tabs-form a:first").tab("show");
+		
+	</script>
+	
+{% endblock %}

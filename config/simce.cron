@@ -1,0 +1,33 @@
+#
+# SiMCE - Agendador de Tarefas
+#
+
+# Estatísticas de sistema CPU, Memória e Disco
+*/5 * * * * root /opt/simce/scripts/simce-stats.php >/dev/null 2>/dev/null
+
+# Estatísticas dos canais GSM
+*/5 * * * * root /opt/simce/scripts/simce-mobile.php >/dev/null 2>/dev/null
+
+# Estatísticas de Internet
+*/5 * * * * root /opt/simce/scripts/simce-internet.php >/dev/null 2>/dev/null
+
+# Estatísticas do Fluxo E1
+*/5 * * * * root /opt/simce/scripts/simce-e1.php >/dev/null 2>/dev/null
+
+# Controle de sessão
+*/5 * * * * root /opt/simce/scripts/simce-session.php  >/dev/null 2>/dev/null
+
+# Controle de arquivos de cache
+*/5 * * * * root /opt/simce/scripts/simce-cache.php  >/dev/null 2>/dev/null
+
+# Limpeza dos dados antigos
+10 3 * * * root /opt/simce/scripts/simce-clean-old-files.php >/dev/null 2>/dev/null
+
+# Copia arquivos PCAP para o Xplico
+*/5 * * * * root /opt/simce/scripts/simce-copy-pcap.php >/dev/null 2>/dev/null
+
+# /etc/motd
+*/30 * * * * root /opt/simce/scripts/simce-motd.php >/dev/null 2>/dev/null
+
+# Remove operações antigas
+30 * * * * root /opt/simce/scripts/simce-remove-old-operations.php >/dev/null 2>/dev/null

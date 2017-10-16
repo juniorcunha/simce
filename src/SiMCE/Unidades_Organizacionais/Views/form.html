@@ -1,0 +1,53 @@
+{% extends 'Core/Views/modal_form.twig.html' %}
+{% import  'Core/Views/components.twig.html' as ui %}
+
+{% block title %}Adicionar uma Unidade Organizacional{% endblock %}
+
+{% block content %}
+
+<form id="form-und-org" class="form-horizontal" role="form">
+	{% if data.id %}
+		<input name="data[id]" type="hidden" value="{{ data.id }}">
+	{% endif %}
+	<div class="form-group">
+		<label class="col-sm-1 control-label">Nome:</label>
+		<div class="col-sm-10 col-sm-offset-1">
+			<input name="data[nome]" type="text" class="form-control" value="{% if data.nome %}{{ data.nome }}{% endif %}">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-1 control-label">Endereço:</label>
+		<div class="col-sm-10 col-sm-offset-1">
+			<input name="data[endereco]" type="text" class="form-control input-sm" value="{% if data.endereco %}{{ data.endereco }}{% endif %}">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-1 control-label">Cidade:</label>
+		<div class="col-sm-5 col-sm-offset-1">
+			<input name="data[cidade]" type="text" class="form-control input-sm" value="{% if data.cidade %}{{ data.cidade }}{% endif %}">
+		</div>
+		<label class="col-sm-1 control-label">Estado:</label>
+		<div class="col-sm-4">
+			{% if data.estado %}
+				{{ ui.form_combo_estados("data[estado]", data.estado) }}
+			{% else %}
+				{{ ui.form_combo_estados("data[estado]") }}
+			{% endif %}
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-1 control-label">Telefone:</label>
+		<div class="col-sm-5 col-sm-offset-1">
+			<input name="data[telefone]" type="text" class="form-control input-sm phone-form" value="{% if data.telefone %}{{ data.telefone }}{% endif %}">
+		</div>
+	</div>
+</form>
+
+<!-- Ajusta o formulário -->
+<script>
+	setTimeout( function() {
+		$(".phone-form").inputmask("(99) 99999-9999");
+	}, 500);
+</script>
+
+{% endblock %}

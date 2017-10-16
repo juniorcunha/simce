@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>..:: SiMCE ::..</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<!-- CSS -->
+		<link href="./assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="all">
+		
+		<!-- jQuery -->
+		<script src="./assets/jquery/jquery.js"></script>
+		
+		<!-- Bootstrap -->
+		<script src="./assets/bootstrap/js/bootstrap.min.js"></script>
+
+	</head>
+	<body style="padding: 10px;">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-2"><img src="./assets/img/simce-logo.png"></div>
+				<div class="col-md-4">
+					{% if mode == 0 %}
+					<h3>Exportação de Registros</h3>
+					{% else %}
+					<h3>Relatório Interativo</h3>
+					{% endif %}
+				</div>
+			</div>
+			<hr>
+			<div class="row">
+				<div class="col-md-12">
+				<center>
+					<table class="table table-bordered table-hover table-condensed">
+						<tr>
+							<th>ID</th>
+							<th>Tipo</th>
+							<th>Data/Hora</th>
+							<th>Estado</th>
+							<th>Alvo</th>
+							<th>Contatos</th>
+							<th>Propriedades</th>
+							<th>Tamanho</th>
+							<th>&nbsp;</th>
+						</tr>
+						{%for row in rows %}
+							<tr>
+								<td>{{ row.get('id') }}</td>
+								<td>
+									<center>
+									{% if row.get('tipo') == 'A' %}
+										<img src='./assets/img/famfamfam/music.png'>
+									{% elseif row.get('tipo') == 'G' %}
+										<img src='./assets/img/famfamfam/email.png'>
+									{% else %}
+										<img src='./assets/img/famfamfam/folder_brick.png'>
+									{% endif %}
+									</center>
+								</td>
+								<td>{{ row.get('data') }}</td>
+								<td>
+									<table border='0'>
+										<tr>
+											<td>
+												{# Prioridade #}
+												{% if row.get('classificacao') == 3 %}
+													<img src='./assets/img/famfamfam/flag_red.png'>
+												{% elseif row.get('classificacao') == 2 %}
+													<img src='./assets/img/famfamfam/flag_yellow.png'>
+												{% elseif row.get('classificacao') == 1 %}
+													<img src='./assets/img/famfamfam/flag_green.png'>
+												{% elseif row.get('classificacao') == 0 %}
+													<img src='./assets/img/famfamfam/flag_blue.png'>
+												{% endif %}
+											</td>
+											<td>
+												{# Status #}
+												{% if row.get('estado') == 2 %}
+													<img src='./assets/img/famfamfam/table_go.png'>
+												{% elseif row.get('estado') == 1 %}
+													<img src='./assets/img/famfamfam/pencil_go.png'>
+												{% elseif row.get('estado') == 0 %}
+													<img src='./assets/img/famfamfam/new.png'>
+												{% endif %}
+											</td>
+											<td>
+												{# Timeline #}
+												{% if row.get('timeline') == 1 %}
+													<img src='./assets/img/famfamfam/timeline_marker.png'>
+												{% endif %}
+											</td>
+										</tr>
+									</table>
+								</td>
+								<td>{{ row.get('alvos').nome }}</td>
+								<td>{{ row.getContatos() }}</td>
+								<td>
+									<center>
+									<img src="files/{{ row.get('id') }}.png" style='height: 40px; width: 200px;'><br>
+									<small>{{ row.get('identificador') }}</small>
+									</center>
+								</td>
+								<td>{{ row.getTamanho() }}</td>
+								<td>
+									<audio controls>
+										{% if mp3 == 1 %}
+										<source src="files/{{ row.get('id') }}.mp3" type="audio/mp3">
+										{% else %}
+										<source src="files/{{ row.get('id') }}.wav" type="audio/wav">
+										{% endif %}
+									</audio>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2"><b>Transcrição:</b></td>
+								<td colspan="7">
+									{% for seg in row.getSegmentos() %}
+										{% if seg.voiceid.contatos_id is empty %}
+											({{seg.inicio}}-{{seg.final}}) <b>Desconhecido</b>: <i>{{seg.transcricao}}</i><br>
+										{% else %}
+											({{seg.inicio}}-{{seg.final}}) <b>{{seg.voiceid.contatos_id.nome}}</b>: <i>{{seg.transcricao}}</i><br>
+										{% endif %}
+									{% endfor %}
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2"><b>Breve Relato:</b></td>
+								<td colspan="7">{{ row.get('relato')|raw }}</td>
+							</tr>
+							<tr>
+								<td colspan="2"><b>Análise:</b></td>
+								<td colspan="7">{{ row.get('observacoes')|raw }}</td>
+							</tr>
+						{% endfor %}
+					</table>
+				</center>
+				</div>
+			</div>
+		<div>
+	</body>
+</html>

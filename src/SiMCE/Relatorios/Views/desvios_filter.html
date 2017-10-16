@@ -1,0 +1,27 @@
+{% import  'Core/Views/components.twig.html' as ui %}
+
+<input type="hidden" name="data[tipo]" value="desvios">
+
+<div class="form-group">
+	<label class="col-sm-2 control-label">Período Inicial:</label>
+	<div class="col-sm-4">
+		{{ ui.form_date_picker( "data[inicio]", 'now'|date_modify('-1 month')|date('d/m/Y'), 0 ) }}
+	</div>
+</div>
+
+<div class="form-group">
+	<label class="col-sm-2 control-label">Período Final:</label>
+	<div class="col-sm-4">
+		{{ ui.form_date_picker( "data[fim]", 'now'|date('d/m/Y'), 0 ) }}
+	</div>
+</div>
+
+<!-- Ajusta os itens de navegação -->
+<script>
+	// Botão voltar
+	$(".btn-prev").removeClass("disabled").off().on( 'click', SiMCE.functions.loadMenu );
+	// Botão avançar
+	$(".btn-next").addClass("hidden");
+	// Botão gerar
+	$(".btn-run").removeClass("hidden");
+</script>

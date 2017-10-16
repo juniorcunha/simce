@@ -1,0 +1,334 @@
+{% extends 'Core/Views/modules.twig.html' %}
+{% import  'Core/Views/components.twig.html' as ui %}
+
+{% block title %}Interceptações{% endblock %}
+{% block description %}Permite a análise dos alvos investigados{% endblock %}
+
+{% block content %}
+
+	<!-- Player Online -->
+	<div style='position: absolute; right: 10px;'>
+		<table border='0'>
+			<tr>
+				<td>Escutando:&nbsp;&nbsp;&nbsp;</td>
+				<td><span id='audio-placeholder-msg'><i>Nenhum</i></span></td>
+				<td>&nbsp;&nbsp;&nbsp;</td>
+				<td><a id='audio-placeholder-btn' href="#" class='hidden' onclick="SiMCE.functions.stopOnlinePlayer();"><i class="cus-control-stop"></i></a></td>
+			</tr>
+		</table>
+	</div>
+	<div id='audio-placeholder-online'></div>
+
+	<!-- Abas -->
+	<ul class="nav nav-tabs nav-tabs-form">
+		<li><a href="#form-online" data-toggle="tab"><span class="cus-time-go"></span> Online</a></li>
+		<li><a href="#form-historico" data-toggle="tab"><span class="cus-table-refresh"></span> Histórico</a></li>
+	</ul>
+
+	<!-- Conteúdo das Abas -->
+	<div class="tab-content">
+		
+		<!-- Online -->
+		<div class="tab-pane" id="form-online">
+			
+			<br>
+			<div class="btn-group" data-toggle="buttons">
+				<label class="btn btn-default btn-sm active" alt="Modo em painéis" title="Modo em painéis">
+					<input type="radio" name="online_mode" value="1" checked><span class="glyphicon glyphicon-th"></span>&nbsp;
+				</label>
+				<label class="btn btn-default btn-sm" alt="Modo em lista" title="Modo em lista">
+					<input type="radio" name="online_mode" value="2"><span class="glyphicon glyphicon-list"></span>&nbsp;
+				</label>
+			</div>
+			<button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#grid-filter-online"><span class="cus-plugin-edit"></span> Filtrar Registros</button>
+			<button type="button" id="btn-clean-filter-online" class="btn btn-default btn-sm"><span class="cus-delete"></span> Limpar Filtro</button>
+			<br>
+			<br>
+
+			<div id="online-panel"></div>
+		</div>
+
+		<!-- Histórico -->
+		<div class="tab-pane" id="form-historico">
+			
+			<br>
+			<button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#grid-filter"><span class="cus-plugin-edit"></span> Filtrar Registros</button>
+			<button type="button" class="btn btn-default btn-sm disabled grid-filter-clean" onclick="SiMCE.functions.cleanFilter();"><span class="cus-delete"></span> Limpar Filtro</button>
+			<button type="button" class="btn btn-default btn-sm" onclick="SiMCE.functions.exportRecords();"><span class="cus-layout-link"></span> Exportar Registros</button>
+			<br>
+			<table id="datagrid" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered table-condensed">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Tipo</th>
+						<th>Data/Hora</th>
+						<th>Estado</th>
+						<th>Alvo</th>
+						<th>Contatos</th>
+						<th>Propriedades</th>
+						<th>Tamanho</th>
+                                                <th></th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			
+		</div>
+		
+	</div>
+
+	<!-- Filtro Histórico -->
+	<div class="modal fade" id="grid-filter" tabindex="-1" role="dialog" aria-labelledby="grid-filter-label" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="grid-filter-label">Filtro de Interceptações</h4>
+				</div>
+				<div class="modal-body">
+
+					<form id="form-grid-filter" class="form-horizontal" role="form">
+						<!-- ID -->
+						<div class="form-group">
+							<label class="col-sm-2 control-label">ID:</label>
+							<div class="col-sm-10">
+								<input name="filter[alvos_id][]" type="text" class="form-control input-sm" value="">
+							</div>
+						</div>
+						<!-- Tipo -->
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Tipo:</label>
+							<div class="col-sm-10">
+							<label class="checkbox-inline">
+								<input type="checkbox" name="filter[tipo][]" value="A" checked><span class="cus-music"></span> Áudio
+							</label>
+							<label class="checkbox-inline">
+								<input type="checkbox" name="filter[tipo][]" value="G" checked><span class="cus-email"></span> SMS
+							</label>
+							<label class="checkbox-inline">
+								<input type="checkbox" name="filter[tipo][]" value="D" checked><span class="cus-folder-brick"></span> Dados
+							</label>
+						  </div>
+						</div>
+						<!-- Data Inicial -->
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Data Inicial:</label>
+							<div class="col-sm-10">
+								{{ ui.form_date_picker( "filter[data][start]", 'now'|date_modify('-1 month')|date('d/m/Y') ) }}
+						  </div>
+						</div>
+						<!-- Data Final -->
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Data Final:</label>
+							<div class="col-sm-10">
+								{{ ui.form_date_picker( "filter[data][end]", 'now'|date('d/m/Y') ) }}
+						  </div>
+						</div>
+						<!-- Prioridade -->
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Prioridade:</label>
+							<div class="col-sm-10">
+								<div class="checkbox-inline">
+									<input type="checkbox" name="filter[classificacao][]" value="0" checked>
+									<span class="cus-flag-blue"></span> Nenhuma
+								</div>
+								<div class="checkbox-inline">
+									<input type="checkbox" name="filter[classificacao][]" value="1" checked>
+									<span class="cus-flag-green"></span> Baixa 
+								</div>
+								<div class="checkbox-inline">
+									<input type="checkbox" name="filter[classificacao][]" value="2" checked>
+									<span class="cus-flag-yellow"></span> Média 
+								</div>
+								<div class="checkbox-inline">
+									<input type="checkbox" name="filter[classificacao][]" value="3" checked>
+									<span class="cus-flag-red"></span> Alta 
+								</div>
+							</div>
+						</div>
+						<!-- Situação -->
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Estado:</label>
+							<div class="col-sm-10">
+								<div class="checkbox-inline">
+									<input type="checkbox" name="filter[estado][]" value="0" checked>
+									<span class="cus-new"></span> Nova
+								</div>
+								<div class="checkbox-inline">
+									<input type="checkbox" name="filter[estado][]" value="1" checked>
+									<span class="cus-table-go"></span> Visualizada 
+								</div>
+								<div class="checkbox-inline">
+									<input type="checkbox" name="filter[relato]" value="1">
+									<span class="cus-pencil-go"></span> Com Breve Relato 
+								</div>
+								<br>
+								<div class="checkbox-inline">
+									<input type="checkbox" name="filter[transcricao]" value="1">
+									<span class="cus-user-go"></span> Com Transcrição
+								</div>
+								<div class="checkbox-inline">
+									<input type="checkbox" name="filter[observacao]" value="1">
+									<span class="cus-report-go"></span> Com Observação
+								</div>
+							</div>
+						</div>
+						<!-- Alvos -->
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Alvos:</label>
+							<div class="col-sm-10">
+								<select name="filter[alvos_id][]" multiple class="form-control">
+								</select>
+							</div>
+						</div>
+						<!-- Interlocutores -->
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Interlocutores:</label>
+							<div class="col-sm-10">
+								<select name="filter[contatos_id][]" multiple class="form-control">
+								</select>
+							</div>
+						</div>
+						<!-- Palavras -->
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Palavras:</label>
+							<div class="col-sm-10">
+								<input name="filter[palavra]" type="text" class="form-control input-sm" value="">
+							</div>
+						</div>
+						<!-- Tamanho -->
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Tamanho:</label>
+							<div class="col-sm-3">
+								<select name="filter[tamanho_tipo]" class="form-control">
+									<option value="0">Áudio</option>
+									<option value="1">SMS</option>
+								</select>
+							</div>
+							<label class="col-sm-1 control-label">Entre:</label>
+							<div class="col-sm-2">
+								<input name="filter[tamanho_inicio]" type="text" class="form-control input-sm" value="">
+							</div>
+							<label class="col-sm-1 control-label">e</label>
+							<div class="col-sm-2">
+								<input name="filter[tamanho_fim]" type="text" class="form-control input-sm" value="">
+							</div>
+						</div>
+					</form>
+				  
+				</div>
+				<div class="modal-footer">
+				  <button type="button" class="btn btn-default" data-dismiss="modal"><span class="cus-delete"></span> Cancelar</button>
+				  <button type="button" class="btn btn-default" data-dismiss="modal" onclick="SiMCE.functions.applyFilter();"><span class="cus-plugin-go"></span> Filtrar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+ <!-- Filtro Online -->
+
+                <div class="modal fade" id="grid-filter-online" tabindex="-1" role="dialog" aria-labelledby="grid-filter-label" aria-hidden="true">
+                        <div class="modal-dialog">
+                                <div class="modal-content">
+                                        <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                <h4 class="modal-title" id="grid-filter-label">Filtro de Interceptações</h4>
+                                        </div>
+                                        <div class="modal-body">
+
+                                        <form id="form-grid-filter" class="form-horizontal" role="form">
+                                                <!-- ID -->
+                                                <div class="form-group">
+                                                        <div class="form-group">
+                                                        <label class="col-sm-2 control-label">Alvos:</label>
+                                                        <div class="col-sm-10">
+                                                                <select id="select-online" name="filter[alvos_id][]" multiple class="form-control">
+                                                                </select>
+                                                        </div>
+                                                        </div>
+                                                </div>
+                                        </form>
+                                </div>
+                                <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal"><span class="cus-delete"></span> Cancelar</button>
+                                        <button id="btn-online-filter" type="button" class="btn btn-default" data-dismiss="modal"><span class="cus-plugin-go"></span> Filtrar</button>
+                                </div>
+                        </div>
+                </div>
+        </div>
+
+	
+	<!-- Modal -->
+	<div id="app-export" class="modal fade">
+		<div class="modal-dialog" style="margin-top: 100px;">
+			<div class="modal-content">
+				<div class="modal-body">
+					Exportando registros...
+					<!-- <button type="button" class="btn btn-default" data-dismiss="modal"><span class="cus-delete"></span> Cancelar</button> -->
+					<div class="progress progress-striped active">
+						<div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Ajusta o grid -->
+	<script>
+		
+		var selectedOnline = [];
+                $(document).ready(function(){
+			selectedOnline = [];
+
+                        $("#select-online option").each(function(index){
+				selectedOnline.push($("#select-online").val());
+                        });
+                });
+
+                $("#btn-clean-filter-online").click(function(){
+                        selectedOnline = [];
+                });
+
+                $("#btn-online-filter").click(function(){
+                        for(var i = 0; i < selectedOnline.length; i++){
+                                selectedOnline.pop();
+                        };
+                        selectedOnline.push($("#select-online option:not(:selected)").val());
+			for(var i = 0; i < selectedOnline.length; i++){ console.log(selectedOnline[i]); };
+                });
+		
+
+		// Seleciona primeira aba ou a segunda caso tenha um ID especificado
+		var id = $('*[name="data[id]"]').val();
+		var alvo = $('*[name="data[alvo]"]').val();
+		if (id || alvo) {
+			$(".nav-tabs-form a:last").tab("show");
+			$('.grid-filter-clean').removeClass('disabled'); // Habilita o botão para limpar o filtro
+			setTimeout( function() {
+				$('*[name="data[id]"]').val('');
+				$('*[name="data[alvo]"]').val('');
+				$('*[name="data[contato]"]').val('');
+			}, 2000 );
+		} else {
+			$(".nav-tabs-form a:first").tab("show");
+		}
+				
+		// Carrega o painel online
+		setTimeout( function() {
+			SiMCE.functions.loadOnlinePanel();
+		}, 100 );
+		
+		// Carrega a lista de alvos
+		setTimeout( function() {
+			SiMCE.functions.getTargetList();
+			SiMCE.functions.getContactList();
+		}, 100);
+		
+		// Seleciona a aba de registros caso exista um ID
+	
+	
+	</script>
+	
+{% endblock %}

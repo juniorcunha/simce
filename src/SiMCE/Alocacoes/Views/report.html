@@ -1,0 +1,56 @@
+{% import  'Core/Views/components.twig.html' as ui %}
+
+{% set table_style = 'font-family: verdana,arial,sans-serif; font-size:11px; color:#333333; border-width: 1px; border-color: #666666; border-collapse: collapse;' %}
+{% set th_style = 'border-width: 1px; padding: 8px; border-style: solid; border-color: #666666; background-color: #dedede;' %}
+{% set td_style = 'border-width: 1px; padding: 8px; border-style: solid; border-color: #666666; background-color: #ffffff;' %}
+
+{% set title = 'font-family: verdana,arial,sans-serif; font-size:11px; color:#333333;' %}
+<table border="0" style="{{ title }}">
+	<tr><td align="center"><h3>Recursos de Interceptação</h3></td></tr>
+</table>
+<br>
+<br>
+{% for op in ops %}
+
+	<b>{{ op.nome }}</b>
+	<br>
+	<br>
+
+	<table cellpadding="0" cellspacing="0" border="0" style="{{ table_style }}">
+		<tr>
+			<th rowspan="2" valign="top" style="{{ th_style }}">Alvo</th>
+			<th rowspan="2" valign="top" style="{{ th_style }}">Responsáveis</th>
+			<th colspan="5" style="{{ th_style }}"><center>Alocações</center></th>
+		</tr>
+		<tr>
+			<th style="{{ th_style }}">Início</th>
+			<th style="{{ th_style }}">Fim</th>
+			<th style="{{ th_style }}">Recurso</th>
+			<th style="{{ th_style }}">Identificação</th>
+			<th style="{{ th_style }}">Desvio</th>
+		</tr>
+		{% for row in op.rows %}
+		<tr>
+			<td rowspan="{{ row.alocacoes|length }}" style="{{ td_style }}">{{ row.nome }}</td>
+			<td rowspan="{{ row.alocacoes|length }}" style="{{ td_style }}">{{ row.permissoes }}</td>
+			{% for aloc in row.alocacoes %}
+				{% if loop.index0 != 0 %}<tr>{% endif %}
+					<td style="{{ td_style }}">{{ aloc.inicio }}</td>
+					<td style="{{ td_style }}">{{ aloc.fim }}</td>
+					<td style="{{ td_style }}">{{ aloc.recurso }}</td>
+					<td style="{{ td_style }}">{{ aloc.identificacao }}</td>
+					<td style="{{ td_style }}">{{ aloc.desvio }} {% if aloc.desvio_via == 'E' %}via E1{% endif %}</td>
+				</tr>	
+			{% endfor %}
+		{% else %}
+			<tr>
+				<td style="{{ td_style }}" colspan="7"><center>Nenhuma alocação no período</center></td>
+			</tr>
+		{% endfor %}
+	</table>
+	<br>
+	<br>
+
+{% endfor %}
+<br>
+<br>

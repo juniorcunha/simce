@@ -1,0 +1,145 @@
+{% extends 'Core/Views/modal_form.twig.html' %}
+{% import  'Core/Views/components.twig.html' as ui %}
+
+{% block title %}Adicionar Registro{% endblock %}
+{% block style %}style="width: 800px;"{% endblock %}
+
+{% block content %}
+	<form id="form-record" class="form-horizontal" role="form">
+		<input name="filter[full]" type="hidden" class="form-control" value="1">
+		<input name="iDisplayStart" type="hidden" class="form-control" value="0">
+		<input name="iDisplayLength" type="hidden" class="form-control" value="10">
+		<!-- ID -->
+		<div class="form-group">
+			<label class="col-sm-2 control-label">ID:</label>
+			<div class="col-sm-4">
+				<input name="filter[id]" type="text" class="form-control" value="">
+			</div>
+		</div>
+		<!-- Tipo -->
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Tipo:</label>
+			<div class="col-sm-10">
+			<label class="checkbox-inline">
+				<input type="checkbox" name="filter[tipo][]" value="A" checked><span class="cus-music"></span> Áudio
+			</label>
+			<label class="checkbox-inline">
+				<input type="checkbox" name="filter[tipo][]" value="G" checked><span class="cus-email"></span> SMS
+			</label>
+			<label class="checkbox-inline">
+				<input type="checkbox" name="filter[tipo][]" value="D" checked><span class="cus-folder-brick"></span> Dados
+			</label>
+		  </div>
+		</div>
+		<!-- Data Inicial -->
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Data Inicial:</label>
+			<div class="col-sm-10">
+				{{ ui.form_date_picker( "filter[data][start]", 'now'|date_modify('-1 month')|date('d/m/Y') ) }}
+		  </div>
+		</div>
+		<!-- Data Final -->
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Data Final:</label>
+			<div class="col-sm-10">
+				{{ ui.form_date_picker( "filter[data][end]", 'now'|date('d/m/Y') ) }}
+		  </div>
+		</div>
+		<!-- Prioridade -->
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Prioridade:</label>
+			<div class="col-sm-10">
+				<div class="checkbox-inline">
+					<input type="checkbox" name="filter[classificacao][]" value="0" checked>
+					<span class="cus-flag-blue"></span> Nenhuma
+				</div>
+				<div class="checkbox-inline">
+					<input type="checkbox" name="filter[classificacao][]" value="1" checked>
+					<span class="cus-flag-green"></span> Baixa 
+				</div>
+				<div class="checkbox-inline">
+					<input type="checkbox" name="filter[classificacao][]" value="2" checked>
+					<span class="cus-flag-yellow"></span> Média 
+				</div>
+				<div class="checkbox-inline">
+					<input type="checkbox" name="filter[classificacao][]" value="3" checked>
+					<span class="cus-flag-red"></span> Alta 
+				</div>
+			</div>
+		</div>
+		<!-- Situação -->
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Estado:</label>
+			<div class="col-sm-10">
+				<div class="checkbox-inline">
+					<input type="checkbox" name="filter[estado][]" value="0" checked>
+					<span class="cus-new"></span> Nova
+				</div>
+				<div class="checkbox-inline">
+					<input type="checkbox" name="filter[estado][]" value="1" checked>
+					<span class="cus-table-go"></span> Visualizada 
+				</div>
+				<div class="checkbox-inline">
+					<input type="checkbox" name="filter[estado][]" value="2" checked>
+					<span class="cus-pencil-go"></span> Visualizada e com Breve Relato 
+				</div>
+			</div>
+		</div>
+		<!-- Alvos -->
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Alvos:</label>
+			<div class="col-sm-10">
+				<select name="filter[alvos_id][]" multiple class="form-control" size="3">
+					{% for obj in alvos %}
+						<option value="{{ obj.id }}">{{ obj.nome }}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+		
+		<!-- Incluir Análise -->
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Incluir Análise:</label>
+			<div class="col-sm-10">
+				<div class="radio-inline">
+					<input type="radio" name="filter[analise]" value="1"> Sim
+				</div>
+				<div class="radio-inline">
+					<input type="radio" name="filter[analise]" value="0" checked> Não
+				</div>
+			</div>
+		</div>
+		
+		<!-- Incluir Relato -->
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Incluir Relato:</label>
+			<div class="col-sm-10">
+				<div class="radio-inline">
+					<input type="radio" name="filter[relato]" value="1"> Sim
+				</div>
+				<div class="radio-inline">
+					<input type="radio" name="filter[relato]" value="0" checked> Não
+				</div>
+			</div>
+		</div>
+		
+		<!-- Incluir Transcrição/Identificação -->
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Incluir Transcrição:</label>
+			<div class="col-sm-10">
+				<div class="radio-inline">
+					<input type="radio" name="filter[transcricao]" value="1"> Sim
+				</div>
+				<div class="radio-inline">
+					<input type="radio" name="filter[transcricao]" value="0" checked> Não
+				</div>
+			</div>
+		</div>
+		
+	</form>
+{% endblock %}
+
+{% block footer %}
+	<button type="button" class="btn btn-default" data-dismiss="modal"><span class="cus-delete"></span> Cancelar</button>
+	<button type="button" class="btn btn-default" onclick="SiMCE.functions.addRecords();"><span class="cus-add"></span> Adicionar</button>
+{% endblock %}

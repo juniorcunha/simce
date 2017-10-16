@@ -1,0 +1,22 @@
+{% extends 'Core/Views/modal_form.twig.html' %}
+{% import  'Core/Views/components.twig.html' as ui %}
+
+{% block title %}SiMCE - ChangeLog{% endblock %}
+{% block style %}style="width: 800px;"{% endblock %}
+
+{% block content %}
+	<div style="height: 300px; overflow: auto;">
+	{% for key,arr in data %}
+		<strong>{{ key }}</strong>
+		<ul>
+			{% for line in arr %}
+				<li>{{ line }}</li>
+			{% endfor %}
+		</ul>
+	{% endfor %}
+	</div>
+{% endblock %}
+
+{% block footer %}
+	<button type="button" class="btn btn-default" data-dismiss="modal"><span class="cus-delete"></span> Fechar</button>
+{% endblock %}

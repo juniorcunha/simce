@@ -1,0 +1,57 @@
+{% import  'Core/Views/components.twig.html' as ui %}
+
+<!-- Conteúdo a ser enviado via formulário -->
+<input name="data[conteudo]" type="hidden" value="{{ content }}">
+
+<table id="datagrid" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered table-condensed" style="margin-left: -15px; margin-top: 10px;">
+	<thead>
+		<tr>
+			<th>Usuário</th>
+			<th>IP</th>
+			<th>Login</th>
+			<th>Logout</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for row in rows %}
+		<tr>
+			<td>{{ row.user }}</td>
+			<td>{{ row.ip }}</td>
+			<td>{{ row.login }}</td>
+			<td>{{ row.logout }}</td>
+		</tr>	
+		{% endfor %}
+	</tbody>
+</table>
+
+<!-- Ajusta os itens de navegação -->
+<script>
+	
+	// Seleciona primeira aba
+	$(".nav-tabs-form a:first").tab("show");
+	
+	// Botão voltar
+	$(".btn-prev").removeClass("hidden").off().on( 'click', SiMCE.functions.loadMenu );
+	// Botão avançar
+	$(".btn-next").addClass("hidden");
+	// Botão gerar
+	$(".btn-run").addClass("hidden");
+	// Botão pdf
+	$(".btn-pdf").removeClass("hidden").on('click', SiMCE.functions.genPDFAccessReport );
+
+	// Popula o grid
+	var cfg = SiMCE.getGridConfig(true);
+	cfg.aoColumns = [
+		{ mData: "user",   sWidth: "25%" },
+		{ mData: "ip",     sWidth: "25%" },
+		{ mData: "login",  sWidth: "25%" },
+		{ mData: "logout", sWidth: "25%" }
+	];
+	cfg.bServerSide   = false;
+	cfg.bSort         = true;
+	cfg.aaSorting     = [[ 2, "asc" ]];
+	cfg.bLengthChange = true;
+	$('#datagrid').dataTable(cfg);
+
+</script>
+

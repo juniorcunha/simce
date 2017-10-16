@@ -1,0 +1,377 @@
+{% import  'Core/Views/components.twig.html' as ui %}
+
+<!-- Abas -->
+<ul class="nav nav-tabs nav-tabs-form">
+	<li><a href="#form-hardware" data-toggle="tab"><span class="cus-page-gear"></span> Hardware</a></li>
+	<li><a href="#form-com" data-toggle="tab"><span class="cus-folder-wrench"></span> Comunicação</a></li>
+	<li><a href="#form-gsm" data-toggle="tab"><span class="cus-chart-line"></span> Sinal GSM</a></li>
+</ul>
+
+<!-- Conteúdo a ser enviado via formulário -->
+<input name="data[conteudo]" type="hidden" value="{{ content }}">
+
+<!-- Conteúdo das Abas -->
+<div class="tab-content">
+
+	<!-- Hardware -->
+	<div class="tab-pane tab-ac" id="form-hardware">
+		
+		<br>
+		<table border='0' style='width: 100%;'>
+			<tr>
+				<!-- Disco -->
+				<td valign='top' colspan='2'>
+					<br>
+					<center>
+						<div id="system-report-disk-utilization" style="height: 180px; width: 900px; margin-top: -20px;"></div>
+					</center>
+					<br>
+				</td>
+			</tr>
+			<tr>
+				<!-- CPU -->
+				<td valign='top'>
+					<br>
+					<center>
+						<div id="system-report-cpu-utilization" style="height: 180px; width: 400px; margin-top: -20px;"></div>
+					</center>
+					<br>
+				</td>
+				<!-- Memória -->
+				<td valign='top'>
+					<br>
+					<center>
+						<div id="system-report-memory-utilization" style="height: 180px; width: 400px; margin-top: -20px;"></div>
+					</center>
+					<br>
+				</td>
+			</tr>
+		</table>
+		
+	</div>
+	
+	<!-- Comunicação -->
+	<div class="tab-pane" id="form-com">
+		
+		<br>
+		{% for obj in links %}
+			<!-- Link {{ loop.index }} E1 Avail -->
+			<div style="position: relative; float: left; margin: 10px;">
+				<br>
+				<center>
+					<div id="link-{{ loop.index }}-e1-avail" style="height: 250px; width: 330px; margin-top: -20px;"></div>
+					<br>
+					<table border='0'>
+						<tr><td><b>Disponível:</b>&nbsp;</td><td>{{ obj.status.ok_time }}</td></tr>
+						<tr><td><b>Não Disponível:</b>&nbsp;</td><td>{{ obj.status.not_ok_time }}</td></tr>
+					</table>
+				</center>
+			</div>
+		{% endfor %}
+		
+		<!-- Link Internet -->
+		<div style="position: relative; float: left; margin: 10px;">
+			<br>
+			<center>
+				<div id="link-internet-avail" style="height: 250px; width: 500px; margin-top: -20px;"></div>
+				<br>
+				<table border='0'>
+					<tr><td><b>Disponível:</b>&nbsp;</td><td>{{ internet.status.ok_time }}</td></tr>
+					<tr><td><b>Não Disponível:</b>&nbsp;</td><td>{{ internet.status.not_ok_time }}</td></tr>
+				</table>
+			</center>
+		</div>
+		
+	</div>
+	
+	<!-- GSM -->
+	<div class="tab-pane" id="form-gsm">
+		
+		<br>
+		<div>
+			<br>
+			<center>
+				<div id="gsm-avail" style="height: 400px; width: 900px; margin-top: -20px;"></div>
+			</center>
+		</div>
+		
+	</div>
+	
+</div>
+
+<!-- Ajusta os itens de navegação -->
+<script>
+	
+	// Seleciona primeira aba
+	$(".nav-tabs-form a:first").tab("show");
+	
+	// Botão voltar
+	$(".btn-prev").removeClass("hidden").off().on( 'click', SiMCE.functions.loadMenu );
+	// Botão avançar
+	$(".btn-next").addClass("hidden");
+	// Botão gerar
+	$(".btn-run").addClass("hidden");
+	// Botão pdf
+	//$(".btn-pdf").removeClass("hidden").on('click', SiMCE.functions.genPDFOperationReport );
+	
+	/**
+	 * Cria o gráfico de estatísticas de Disco
+	 */	
+	$(function () {
+        $('#system-report-disk-utilization').highcharts({
+            chart:  { type: 'area' },
+			legend: { enabled: false },
+			colors: ['#c64546'],
+            title:  { text: 'Utilização de Disco' },
+			xAxis: {
+				categories: {{ system.labels | json_encode() | raw }},
+				tickInterval: {{ system.ticks }}
+			},
+            yAxis: {
+                title: { text: '%' },
+				min:   0,
+				max:   100
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.y}%</b>'
+            },
+            plotOptions: {
+                area: {
+                    marker: {
+                        enabled: false,
+                        symbol: 'circle',
+                        radius: 2,
+                        states: {
+                            hover: { enabled: true }
+                        }
+                    }
+                }
+            },
+            series: [{
+                name: 'Utilização',
+                data: [ {{ system.disco }} ],
+				turboThreshold: 100000
+            }]
+        });
+    });
+	
+	/**
+	 * Cria o gráfico de estatísticas de CPU
+	 */	
+	$(function () {
+        $('#system-report-cpu-utilization').highcharts({
+            chart:  { type: 'area' },
+			legend: { enabled: false },
+			//colors: ['#c64546'],
+            title:  { text: 'Utilização de CPU' },
+			xAxis: {
+				categories: {{ system.labels | json_encode() | raw }},
+				tickInterval: {{ system.ticks *2  | number_format }}
+			},
+            yAxis: {
+                title: { text: '%' },
+				min:   0,
+				max:   100
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.y}%</b>'
+            },
+            plotOptions: {
+                area: {
+                    marker: {
+                        enabled: false,
+                        symbol: 'circle',
+                        radius: 2,
+                        states: {
+                            hover: { enabled: true }
+                        }
+                    }
+                }
+            },
+            series: [{
+                name: 'Utilização',
+                data: [ {{ system.cpu }} ],
+				turboThreshold: 100000
+            }]
+        });
+    });
+	
+	/**
+	 * Cria o gráfico de estatísticas de Memória
+	 */	
+	$(function () {
+        $('#system-report-memory-utilization').highcharts({
+            chart:  { type: 'area' },
+			legend: { enabled: false },
+			//colors: ['#c64546'],
+            title:  { text: 'Utilização de Memória' },
+			xAxis: {
+				categories: {{ system.labels | json_encode() | raw }},
+				tickInterval: {{ system.ticks *2  | number_format }}
+			},
+            yAxis: {
+                title: { text: '%' },
+				min:   0,
+				max:   100
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.y}%</b>'
+            },
+            plotOptions: {
+                area: {
+                    marker: {
+                        enabled: false,
+                        symbol: 'circle',
+                        radius: 2,
+                        states: {
+                            hover: { enabled: true }
+                        }
+                    }
+                }
+            },
+            series: [{
+                name: 'Utilização',
+                data: [ {{ system.memoria }} ],
+				turboThreshold: 100000
+            }]
+        });
+    });
+
+	/**
+	 * Cria os gráficos de links E1
+	 */
+	{% for obj in links %}
+		$(function () {
+			$('#link-{{ loop.index }}-e1-avail').highcharts({
+				chart: {
+					plotBackgroundColor: null,
+					plotBorderWidth: null,
+					plotShadow: false
+				},
+				colors: ['#84b761','#c64546'],
+				title: {
+					text: 'Disponibilidade - Feixe Link {{loop.index}}',
+				},
+				tooltip: {
+					pointFormat: '{point.name}: <b>{point.percentage:.1f}%</b>'
+				},
+				plotOptions: {
+					pie: {
+						cursor: 'pointer',
+						showInLegend: true,
+						dataLabels: {
+							enabled: false
+						}
+					}
+				},
+				series: [{
+					type: 'pie',
+					name: '%',
+					data: [
+						{ name: 'OK',      y: {{ obj.status.ok }}, sliced: true, selected: true },
+						{ name: 'Crítico', y: {{ obj.status.not_ok }} }
+					]
+				}]
+			});
+		});
+	{% endfor %}
+
+	/**
+	 * Cria o gráfico de estatísticas de Internet
+	 */	
+	$(function () {
+		$('#link-internet-avail').highcharts({
+			title: {
+				text: 'Disponibilidade - Internet'
+			},
+			xAxis: {
+				categories: {{ internet.labels | json_encode() | raw }},
+				tickInterval: {{ internet.ticks *2  | number_format }}
+			},
+			yAxis: [{
+				min: 0,
+				minRange: 0.1,
+				labels: { format: '{value}%' },
+				title:  { text: 'Perda de Pacotes' }
+			}, {
+				min: 0,
+				minRange: 0.1,
+				labels: {
+					format: '{value}ms',
+					style: {
+	                    color: Highcharts.getOptions().colors[0]
+	                }
+				},
+				title:  { text: 'Latência' },
+				opposite: true
+			}],
+			tooltip: {
+				shared: true
+			},
+			series: [{
+				name: 'Latência',
+				type: 'spline',
+				yAxis: 1,
+				data: [ {{ internet.latencia }} ],
+				marker: {
+					enabled: false
+				},
+				tooltip: {
+					valueSuffix: 'ms'
+				}	
+			}, {
+				name: 'Perda de Pacotes',
+				type: 'spline',
+				data: [ {{ internet.perda_pacotes }} ],
+				marker: {
+					enabled: false
+				},
+				tooltip: {
+					valueSuffix: '%'
+				}
+			}]
+		});
+	});
+	
+	/**
+	 * Cria o gráfico de estatísticas GSM
+	 */	
+	$(function () {
+		$('#gsm-avail').highcharts({
+			title: {
+				text: 'Sinal dos Canais GSM'
+			},
+			xAxis: {
+				categories: {{ gsm.labels | json_encode() | raw }},
+				tickInterval: {{ gsm.ticks }}
+			},
+			yAxis: [{
+				min: 0,
+				max: 100,
+				labels: {
+					format: '{value}%',
+				},
+				title:  { text: '%' }
+			}],
+			tooltip: {
+				shared: true
+			},
+			series: [
+				{% for obj in gsm.canais %}
+					{
+						name: '{{ obj.nome }}',
+						type: 'spline',
+						data: [ {{ obj.sinal }} ],
+						marker: {
+							enabled: false
+						},
+						tooltip: {
+							valueSuffix: '%'
+						}	
+					}{% if not loop.last %},{% endif %}
+				{% endfor %}
+			]
+		});
+	});
+    
+</script>

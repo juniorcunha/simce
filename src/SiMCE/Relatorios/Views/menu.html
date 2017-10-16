@@ -1,0 +1,120 @@
+<!-- Relatório de Operação -->
+{% if app.user.isAdmin() %}
+	<div class="form-group">
+		<div class="col-sm-2">
+			<input name="data[tipo]" type="radio" value="operacao" checked>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<img src="/simce/assets/img/report_operacao.png">
+		</div>
+		<div class="col-sm-6" style="margin: 10px 0px 0px -50px;">
+			<b>Relatório Analítico da Operação</b><br>
+			Informações detalhadas sobre as interceptações, alvos e contatos.
+		</div>
+	</div>
+{% endif %}
+
+<!-- Relatório Judicial -->
+<div class="form-group">
+	<div class="col-sm-2">
+		<input name="data[tipo]" type="radio" value="judicial">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<img src="/simce/assets/img/report_judicial.png">
+	</div>
+	<div class="col-sm-6" style="margin: 10px 0px 0px -50px;">
+		<b>Relatório Judicial</b><br>
+		Permite criar relatórios livres utilizando informações coletadas durante as investigações.
+	</div>
+</div>
+
+<!-- Relatório Interativo -->
+<div class="form-group">
+	<div class="col-sm-2">
+		<input name="data[tipo]" type="radio" value="interativo">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<img src="/simce/assets/img/report_interativo.png">
+	</div>
+	<div class="col-sm-6" style="margin: 10px 0px 0px -50px;">
+		<b>Relatório Interativo</b><br>
+		Gera um cópia interativa da operação que pode ser acessada sem a utilização do SiMCE&copy;.
+	</div>
+</div>
+
+<!-- Relatório Auditoria -->
+{% if app.user.isAdmin() %}
+	<div class="form-group">
+		<div class="col-sm-2">
+			<input name="data[tipo]" type="radio" value="auditoria">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<img src="/simce/assets/img/report_auditoria.png">
+		</div>
+		<div class="col-sm-6" style="margin: 10px 0px 0px -50px;">
+			<b>Relatório de Auditoria</b><br>
+			Visualiza as ações realizadas pelos usuários na operação.
+		</div>
+	</div>
+{% endif %}
+
+<!-- Relatório de Acesso -->
+{% if app.user.isAdmin() %}
+	<div class="form-group">
+		<div class="col-sm-2">
+			<input name="data[tipo]" type="radio" value="acesso">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<img src="/simce/assets/img/report_login.png">
+		</div>
+		<div class="col-sm-6" style="margin: 10px 0px 0px -50px;">
+			<b>Relatório de Acesso</b><br>
+			Mostra de forma simplificada as informações de acesso ao SiMCE&copy;.
+		</div>
+	</div>
+{% endif %}
+
+<!-- Relatório de Distribuição de Canais -->
+{% if app.user.isAdmin() %}
+	<div class="form-group">
+		<div class="col-sm-2">
+			<input name="data[tipo]" type="radio" value="canais">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<img src="/simce/assets/img/report_canais.png">
+		</div>
+		<div class="col-sm-6" style="margin: 10px 0px 0px -50px;">
+			<b>Relatório de Distribuição de Canais</b><br>
+			Identifica a relação entre alvos x canais x responsáveis.
+		</div>
+	</div>
+{% endif %}
+
+<!-- Relatório de Desvios -->
+{% if app.user.isAdmin() %}
+	<div class="form-group">
+		<div class="col-sm-2">
+			<input name="data[tipo]" type="radio" value="desvios">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<img src="/simce/assets/img/report_desvios.png">
+		</div>
+		<div class="col-sm-6" style="margin: 10px 0px 0px -50px;">
+			<b>Relatório de Desvios</b><br>
+			Identifica os devios (siga-me) realizados e exibe as interceptações de cada um.
+
+		</div>
+	</div>
+{% endif %}
+
+<!-- Relatório Sistema -->
+{% if app.user.isAdmin() %}
+	<div class="form-group">
+		<div class="col-sm-2">
+			<input name="data[tipo]" type="radio" value="sistema">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<img src="/simce/assets/img/report_sistema.png">
+		</div>
+		<div class="col-sm-6" style="margin: 10px 0px 0px -50px;">
+			<b>Relatório de Sistema</b><br>
+			Exibe informações sobre o funcionamento e a performance do sistema.
+		</div>
+	</div>
+{% endif %}
+
+<!-- Ajusta os itens de navegação -->
+<script>
+	// Botão voltar
+	$(".btn-prev").addClass("disabled").off();
+	// Botão avançar
+	$(".btn-next").removeClass("hidden").removeClass("disabled").off().on( 'click', SiMCE.functions.loadFilter );
+	// Botão gerar
+	$(".btn-run").addClass("hidden").off().html("<span class='cus-report-go'></span> Carregar Relatório").on( 'click', SiMCE.functions.loadReport );
+	// Botão pdf
+	$(".btn-pdf").addClass("hidden").off();
+</script>

@@ -1,0 +1,18 @@
+Alias /simce "/opt/simce"
+
+<Directory "/opt/simce">
+	LimitRequestBody  0
+	<IfModule mod_rewrite.c>
+		Options -MultiViews
+		RewriteEngine On
+		RewriteBase /simce/
+		RewriteCond %{REQUEST_FILENAME} !-f
+		RewriteRule ^ index.php [QSA,L]
+	</IfModule>
+	SSLRequireSSL
+	Options FollowSymLinks
+	AllowOverride None
+	Order allow,deny
+	Allow from all
+</Directory>
+

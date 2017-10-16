@@ -1,0 +1,59 @@
+{% extends 'Core/Views/modal_form.twig.html' %}
+{% import  'Core/Views/components.twig.html' as ui %}
+
+{% block title %}Perfil do Usuário{% endblock %}
+
+{% block content %}
+
+<form id="form-user-profile" class="form-horizontal" role="form">
+	{% if data.id %}
+		<input name="data[id]" type="hidden" value="{{ data.id }}">
+		<input name="data[login]" type="hidden" value="{{ data.login }}">
+		<input name="data[tipo]" type="hidden" value="{{ data.tipo }}">
+	{% endif %}
+	<div class="form-group">
+		<label class="col-sm-1 control-label">Nome:</label>
+		<div class="col-sm-10 col-sm-offset-1">
+			<input name="data[nome]" type="text" class="form-control" value="{% if data.nome %}{{ data.nome }}{% endif %}" readonly>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-1 control-label">Email:</label>
+		<div class="col-sm-10 col-sm-offset-1">
+			<input name="data[email]" type="text" class="form-control input-sm" value="{% if data.email %}{{ data.email }}{% endif %}">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-1 control-label">Senha:</label>
+		<div class="col-sm-10 col-sm-offset-1">
+			<input name="data[password]" type="password" class="form-control input-sm" value="{% if data.password %}{{ data.password }}{% endif %}">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-1 control-label">Confirmação:</label>
+		<div class="col-sm-10 col-sm-offset-1">
+			<input name="data[password2]" type="password" class="form-control input-sm" value="{% if data.password %}{{ data.password }}{% endif %}">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-1 control-label">Telefone:</label>
+		<div class="col-sm-10 col-sm-offset-1">
+			<input name="data[telefone]" type="text" class="form-control input-sm phone-form" value="{% if data.telefone %}{{ data.telefone }}{% endif %}">
+		</div>
+	</div>
+</form>
+
+<!-- Ajusta o formulário -->
+<script>
+	setTimeout( function() {
+		$(".login-control").inputmask('Regex', { regex: "[a-z0-9\_\.]+" });
+		$('*[name="data[telefone]"]').inputmask("(99) 99999-9999");
+	}, 500);
+</script>
+	
+{% endblock %}
+
+{% block footer %}
+	<button type="button" class="btn btn-default" data-dismiss="modal"><span class="cus-delete"></span> Cancelar</button>
+	<button type="button" class="btn btn-default" onclick="SiMCE.saveUserProfile();"><span class="cus-disk"></span> Salvar</button>
+{% endblock %}

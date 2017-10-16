@@ -1,0 +1,404 @@
+{% extends 'Core/Views/modal_form.twig.html' %}
+{% import  'Core/Views/components.twig.html' as ui %}
+
+{% block title %}#{{ cache.id }} - Detalhes da Interceptação{% endblock %}
+{% block style %}style="width: 800px;"{% endblock %}
+
+{% block content %}
+
+{% set detail_id = random() %}
+
+<form id="form-registro" class="form-horizontal" role="form">
+
+	<input name="data[id]" type="hidden" value="{{ cache.id }}">
+
+	<center>
+		{% if registro.get('tipo') == 'A' %}
+			<div id='audio-placeholder-{{detail_id}}' style='cursor: pointer;' onclick="SiMCE.functions.addAudioPlayer('audio-placeholder-{{detail_id}}', 'audio-{{detail_id}}', '/simce/interceptacoes/play/?id={{ registro.get("id") }}');">
+				<i class='cus-music'></i> Ouvir
+			</div>
+			{% if app.user.isAdmin() or app.user.hasPermissionByTarget( registro.get('alvos_id'), 'ACTION_INTERCEPTION_DOWNLOAD' ) %}
+				<br>( Clique <b><a href="/simce/interceptacoes/download/?id={{ registro.get("id") }}">aqui</a></b> para fazer o download do arquivo )
+			{% endif %}
+		{% endif %}
+		{% if registro.get('tipo') == 'G' %}
+			{{ cache.conteudo|raw }}
+		{% endif %}
+	</center>
+	</br>
+
+	<!-- Abas -->
+	<ul class="nav nav-tabs nav-tabs-detalhes-{{detail_id}}">
+		<li><a href="#form-detalhes-geral-{{detail_id}}" data-toggle="tab"><span class="cus-page-white-text-width"></span> Geral</a></li>
+		{% if registro.get('tipo') == 'A' %}
+			{% if app.user.isAdmin() or app.user.hasPermissionByTarget( registro.get('alvos_id'), 'ACTION_INTERCEPTION_TRANSCRIPTION' ) %}
+				<li><a href="#form-detalhes-transcricao-{{detail_id}}" data-toggle="tab"><span class="cus-user-comment"></span> Transcrição e Identificação</a></li>
+			{% endif %}
+		{% endif %}
+		{% if app.user.isAdmin() or app.user.hasPermissionByTarget( registro.get('alvos_id'), 'ACTION_INTERCEPTION_DEFINITIONS' ) %}
+			<li><a href="#form-detalhes-classificacao-{{detail_id}}" data-toggle="tab"><span class="cus-tag-blue"></span> Definições</a></li>
+		{% endif %}
+		{% if app.user.isAdmin() or app.user.hasPermissionByTarget( registro.get('alvos_id'), 'ACTION_INTERCEPTION_OBS' ) %}
+			<li><a href="#form-detalhes-observacoes-{{detail_id}}" data-toggle="tab"><span class="cus-book-open"></span> Observações</a></li>
+		{% endif %}
+	</ul>
+
+	<!-- Conteúdo das Abas -->
+	<div class="tab-content">
+
+		<!-- Geral -->
+		<div class="tab-pane active" id="form-detalhes-geral-{{detail_id}}">
+			<br>
+			<table border='0' style='width: 100%;' cellspacing='5'>
+				<tr>
+					<!-- Detalhes -->
+					<td valign='top'>
+						<table border='0' cellpadding='5'>
+							<tr>
+								<td><b>ID:</b></td>
+								<td>&nbsp;&nbsp;&nbsp;{{ cache.id }}</td>
+							</tr>
+							<tr>
+								<td><b>Hash:</b></td>
+								<td>&nbsp;&nbsp;&nbsp;{{ hash }}</td>
+							</tr>
+							<tr>
+								<td><b>Tipo:</b></td>
+								{% if registro.get('tipo') == 'A' %}
+									<td>&nbsp;&nbsp;&nbsp;Áudio</td>
+								{% endif %}
+								{% if registro.get('tipo') == 'G' %}
+									<td>&nbsp;&nbsp;&nbsp;SMS</td>
+								{% endif %}
+								{% if registro.get('tipo') == 'D' %}
+									<td>&nbsp;&nbsp;&nbsp;Dados</td>
+								{% endif %}
+							</tr>
+							<tr>
+								<td><b>Data/Hora:</b></td>
+								<td>&nbsp;&nbsp;&nbsp;{{ cache.data }}</td>
+							</tr>
+							{% if registro.get('tipo') == 'A' %}
+								<tr>
+									<td><b>Duração:</b></td>
+									<td>&nbsp;&nbsp;&nbsp;{{ cache.tempo_cache }}</td>
+								</tr>
+							{% endif %}
+							<tr>
+								<td><b>Situação</b></td>
+								<td>&nbsp;&nbsp;&nbsp;{{ cache.estado_cache|raw }}</td>
+							</tr>
+							<tr>
+								<td><b>Tamanho</b></td>
+								<td>&nbsp;&nbsp;&nbsp;{{ cache.tamanho_cache }}</td>
+							</tr>
+							{% if registro.get('tipo') == 'A' %}
+								<tr>
+									<td><b>Gráfico:</b></td>
+									<td valign='top'><img src='{{ registro.getImagePath() }}' style='height: 40px; width: 200px;'></td>
+								</tr>
+							{% endif %}
+							{% if registro.get('attr').type == 'webs' %}
+								<tr>
+									<td><b>Navegador</b></td>
+									<td>&nbsp;&nbsp;&nbsp;{{ registro.get('attr').data.agent }}</td>
+								</tr>
+								<tr>
+									<td><b>URL</b></td>
+									<td>&nbsp;&nbsp;&nbsp;<a href="http://{{ registro.get('attr').data.url }}" target="_blank">{{ registro.get('attr').data.url }}</a></td>
+								</tr>
+								<tr>
+									<td><b>Método</b></td>
+									<td>&nbsp;&nbsp;&nbsp;{{ registro.get('attr').data.method }}</td>
+								</tr>
+								<tr>
+									<td><b>Tipo de Conteúdo:</b></td>
+									<td>&nbsp;&nbsp;&nbsp;{{ registro.get('attr').data.content_type }}</td>
+								</tr>
+							{% endif %}
+							{% if registro.get('attr').type == 'unknows' %}
+								<tr>
+									<td><b>Protocolo</b></td>
+									<td>&nbsp;&nbsp;&nbsp;{{ registro.get('attr').data.l7prot }}</td>
+								</tr>
+								<tr>
+									<td><b>URL</b></td>
+									<td>&nbsp;&nbsp;&nbsp;<a href="https://{{ registro.get('attr').data.dst }}" target="_blank">{{ registro.get('attr').data.dst }}</a></td>
+								</tr>
+								<tr>
+									<td><b>Porta</b></td>
+									<td>&nbsp;&nbsp;&nbsp;{{ registro.get('attr').data.dst_port }}</td>
+								</tr>
+							{% endif %}
+							{% if registro.get('attr').type == 'mms' %}
+								<tr>
+									<td><b>URL</b></td>
+									<td>&nbsp;&nbsp;&nbsp;<a href="http://{{ registro.get('attr').data.url }}" target="_blank">{{ registro.get('attr').data.url }}</a></td>
+								</tr>
+								<tr>
+									<td><b>De:</b></td>
+									<td>&nbsp;&nbsp;&nbsp;{{ registro.get('attr').data.from_num }}</td>
+								</tr>
+								<tr>
+									<td><b>Para:</b></td>
+									<td>&nbsp;&nbsp;&nbsp;{{ registro.get('attr').data.to_num }}</td>
+								</tr>
+								<tr>
+									<td><b>Cc:</b></td>
+									<td>&nbsp;&nbsp;&nbsp;{{ registro.get('attr').data.cc_num }}</td>
+								</tr>
+								<tr>
+									<td><b>Bcc:</b></td>
+									<td>&nbsp;&nbsp;&nbsp;{{ registro.get('attr').data.bcc_num }}</td>
+								</tr>
+							{% endif %}
+							{% if registro.get('attr').type == 'unkfiles' %}
+								<tr>
+									<td><b>URL</b></td>
+									<td>&nbsp;&nbsp;&nbsp;<a href="/simce/interceptacoes/fileDownload/?file={{ registro.get('attr').data.file_path }}" target="_blank">URL Desconhecida</a></td>
+								</tr>
+							{% endif %}
+							{% if registro.get('attr').type == 'httpfiles' %}
+								<tr>
+									<td><b>URL</b></td>
+									<td>&nbsp;&nbsp;&nbsp;<a href="/simce/interceptacoes/fileDownload/?file={{ registro.get('attr').data.file_path }}" target="_blank">{{ registro.get('attr').data.url }}</a></td>
+								</tr>
+							{% endif %}
+						</table>
+					</td>
+					<!-- Breve Relato -->
+					<td style="width: 50%;">
+						<b>Breve Relato:</b>
+						<center>
+							<textarea name="data[relato]" class="data-relato">{{ cache.relato }}</textarea>
+						</center>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		{% if registro.get('tipo') == 'A' %}
+			{% if app.user.isAdmin() or app.user.hasPermissionByTarget( registro.get('alvos_id'), 'ACTION_INTERCEPTION_TRANSCRIPTION' ) %}
+				<!-- Transcrição e Identificação -->
+				<div class="tab-pane" id="form-detalhes-transcricao-{{detail_id}}" style="max-height: 300px; overflow-y: scroll; overflow-x: hidden;">
+					<br>
+					<table border='0' style='width: 100%;' cellspacing='5'>
+						{% if segmentos|length == 0 %}
+							<tr>
+								<td colspan="3">
+									<center>Nenhum segmento de voz identificado</center>
+								</td>
+							</tr>
+						{% endif %}
+						{% for obj in segmentos %}
+							<tr>
+								{% if loop.index0 is even %}
+									<td style="width: 220px;">
+										<center>
+
+											{% set imgAvatar = '/simce/assets/img/person.png' %}
+											{% for cObj in contatos %}
+												{% if obj.voiceid.contatos_id == cObj.id %}
+													{% if cObj.foto|length > 5 %}
+														{% set imgAvatar = cObj.foto %}
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+											<img class='voice-img-{{ obj.voiceid_id }}' src='{{ imgAvatar }}' width="64" height="64"><br>
+
+											<!-- Lista os contatos e permite adicionar um novo -->
+											<select name="data[seg][{{ obj.id }}][voiceid]" class="form-control input-sm voice-combo-{{ obj.voiceid_id }} voice-combo" style="width: 150px;" onchange="SiMCE.functions.showContactForm(this, {{ obj.voiceid_id }}, {{ obj.id }});">
+												<option value='0'>Selecione um contato</option>
+												<option value='I'>-------------------------</option>
+												<option value='N'>Adicionar novo contato...</option>
+												<option value='I'>-------------------------</option>
+												{% for cObj in contatos %}
+													{% if obj.voiceid.contatos_id == cObj.id %}
+														<option value='{{ cObj.id }}-{{ cObj.sexo }}' selected>{{ cObj.nome }}</option>
+													{% else %}
+														<option value='{{ cObj.id }}-{{ cObj.sexo }}'>{{ cObj.nome }}</option>
+													{% endif %}
+												{% endfor %}
+											</select>
+
+											<!-- Local onde irá aparecer o combo com o nome do contato -->
+											<div id='form-seg-{{ obj.id }}-contato' style='display: none;'>
+												<table border='0'>
+													<tr>
+														<td><b>Nome:&nbsp;</b></td>
+														<td>
+															<input name="contato[{{ obj.id }}][nome]" type="text" class="form-control input-sm" style="width: 115px;" value="">
+														</td>
+														<td><b>Sexo:&nbsp;</b></td>
+														<td>
+															<select name="contato[{{ obj.id }}][sexo]" class="form-control input-sm" style="width: 100px;">
+																<option value='M'>Masculino</option>
+																<option value='F'>Feminino</option>
+															</select>
+														</td>
+														<td>
+															<button type="button" class="btn btn-default" onclick="SiMCE.functions.addContact( {{ obj.voiceid_id }}, {{ obj.id }} );"><span class="cus-add"></span></button>
+														</td>
+													</tr>
+												</table>
+											</div>
+											{{ obj.inicio }} - {{ obj.final }}<br>
+											<div id='seg-placeholder-{{ obj.id }}' style='cursor: pointer;' onclick="SiMCE.functions.addMiniAudioPlayer('seg-placeholder-{{ obj.id }}', 'seg-{{ obj.id }}', '/simce/interceptacoes/play/?id={{ registro.get("id") }}&start={{ obj.inicio }}&end={{ obj.final }}');">
+												<i class='cus-music'></i> Ouvir
+											</div>
+											<script>
+												//SiMCE.functions.addMiniAudioPlayer('seg-placeholder-{{ obj.id }}', 'seg-{{ obj.id }}', '/simce/interceptacoes/play/?id={{ registro.get("id") }}&start={{ obj.inicio }}&end={{ obj.final }}');
+											</script>
+										</center>
+									</td>
+								{% endif %}
+								<td>
+									{% if loop.index0 is even %}
+										<div class="bubble-left">
+									{% else %}
+										<div class="bubble-right">
+									{% endif %}
+											<textarea name="data[seg][{{ obj.id }}][transcricao]" rows="5" cols="*" style="width: 100%;">{{ obj.transcricao }}</textarea>
+										</div>
+								</td>
+								{% if loop.index0 is odd %}
+									<td style="width: 220px;">
+										<center>
+											
+											{% set imgAvatar = '/simce/assets/img/person.png' %}
+											{% for cObj in contatos %}
+												{% if obj.voiceid.contatos_id == cObj.id %}
+													{% if cObj.foto|length > 5 %}
+														{% set imgAvatar = cObj.foto %}
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+											<img class='voice-img-{{ obj.voiceid_id }}' src='{{ imgAvatar }}' width="64" height="64"><br>
+
+											<!-- Lista os contatos e permite adicionar um novo -->
+											<select name="data[seg][{{ obj.id }}][voiceid]" class="form-control input-sm voice-combo-{{ obj.voiceid_id }} voice-combo" style="width: 150px;" onchange="SiMCE.functions.showContactForm(this, {{ obj.voiceid_id }}, {{ obj.id }});">
+												<option value='0'>Selecione um contato</option>
+												<option value='I'>-------------------------</option>
+												<option value='N'>Adicionar novo contato...</option>
+												<option value='I'>-------------------------</option>
+												{% for cObj in contatos %}
+													{% if obj.voiceid.contatos_id == cObj.id %}
+														<option value='{{ cObj.id }}-{{ cObj.sexo }}' selected>{{ cObj.nome }}</option>
+													{% else %}
+														<option value='{{ cObj.id }}-{{ cObj.sexo }}'>{{ cObj.nome }}</option>
+													{% endif %}
+												{% endfor %}
+											</select>
+
+											<!-- Local onde irá aparecer o combo com o nome do contato -->
+											<div id='form-seg-{{ obj.id }}-contato' style='display: none;'>
+												<table border='0'>
+													<tr>
+														<td><b>Nome:&nbsp;</b></td>
+														<td>
+															<input name="contato[{{ obj.id }}][nome]" type="text" class="form-control input-sm" style="width: 115px;" value="">
+														</td>
+														<td><b>Sexo:&nbsp;</b></td>
+														<td>
+															<select name="contato[{{ obj.id }}][sexo]" class="form-control input-sm" style="width: 100px;">
+																<option value='M'>Masculino</option>
+																<option value='F'>Feminino</option>
+															</select>
+														</td>
+														<td>
+															<button type="button" class="btn btn-default" onclick="SiMCE.functions.addContact( {{ obj.voiceid_id }}, {{ obj.id }} );"><span class="cus-add"></span></button>
+														</td>
+													</tr>
+												</table>
+											</div>
+											{{ obj.inicio }} - {{ obj.final }}<br>
+											<div id='seg-placeholder-{{ obj.id }}' style='cursor: pointer;' onclick="SiMCE.functions.addMiniAudioPlayer('seg-placeholder-{{ obj.id }}', 'seg-{{ obj.id }}', '/simce/interceptacoes/play/?id={{ registro.get("id") }}&start={{ obj.inicio }}&end={{ obj.final }}');">
+												<i class='cus-music'></i> Ouvir
+											</div>
+											<script>
+												//SiMCE.functions.addMiniAudioPlayer('seg-placeholder-{{ obj.id }}', 'seg-{{ obj.id }}', '/simce/interceptacoes/play/?id={{ registro.get("id") }}&start={{ obj.inicio }}&end={{ obj.final }}');
+											</script>
+										</center>
+									</td>
+								{% endif %}
+							</tr>
+						{% endfor %}
+					</table>
+				</div>
+			{% endif %}
+		{% endif %}
+
+		<!-- Definições -->
+		{% if app.user.isAdmin() or app.user.hasPermissionByTarget( registro.get('alvos_id'), 'ACTION_INTERCEPTION_DEFINITIONS' ) %}
+			<div class="tab-pane" id="form-detalhes-classificacao-{{detail_id}}">
+				<br>
+				<table border='0' style='width: 100%;' cellspacing='10'>
+					<!-- Classificação -->
+					<tr>
+						<td style="padding-top: 10px;"><b><span class="cus-tag-blue-edit"></span> Classificação:</b></td>
+						<td>
+							<div class="radio-inline">
+								<input type="radio" name="data[classificacao]" value="0" {% if cache.classificacao == 0 %}checked{% endif %}>
+								<span class="cus-flag-blue"></span> Sem Prioridade
+							</div>
+							<div class="radio-inline">
+								<input type="radio" name="data[classificacao]" value="1" {% if cache.classificacao == 1 %}checked{% endif %}>
+								<span class="cus-flag-green"></span> Baixa Prioridade 
+							</div>
+							<div class="radio-inline">
+								<input type="radio" name="data[classificacao]" value="2" {% if cache.classificacao == 2 %}checked{% endif %}>
+								<span class="cus-flag-yellow"></span> Média Prioridade 
+							</div>
+							<div class="radio-inline">
+								<input type="radio" name="data[classificacao]" value="3" {% if cache.classificacao == 3 %}checked{% endif %}>
+								<span class="cus-flag-red"></span> Alta Prioridade 
+							</div>
+						</td>
+					</tr>
+					<tr><td colspan="2"><br></td></tr>
+					<!-- Timeline -->
+					<tr>
+						<td style="padding-top: 10px;"><b><span class="cus-timeline-marker"></span> Cronologia de Eventos:</b></td>
+						<td>
+							<div class="radio-inline">
+								<input type="radio" name="data[timeline]" value="1" {% if cache.timeline == 1 %}checked{% endif %}>
+								Sim
+							</div>
+							<div class="radio-inline">
+								<input type="radio" name="data[timeline]" value="0" {% if cache.timeline != 1 %}checked{% endif %}>
+								Não
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		{% endif %}
+		
+		<!-- Observações -->
+		{% if app.user.isAdmin() or app.user.hasPermissionByTarget( registro.get('alvos_id'), 'ACTION_INTERCEPTION_OBS' ) %}
+			<div class="tab-pane" id="form-detalhes-observacoes-{{detail_id}}">
+				<br>
+				<textarea name="data[obs]" class="data-obs">{{ cache.observacoes }}</textarea>
+			</div>
+		{% endif %}
+
+	</div>
+		
+</form>
+
+<!-- Ajusta as abas -->
+<script>
+
+	// Seleciona primeira aba
+	$(".nav-tabs-detalhes-{{detail_id}} a:first").tab("show");
+
+	// Exibe o editor
+	tinymce.init({ selector: ".data-relato", plugins: 'textcolor',toolbar: 'undo redo | styleselect | bold italic forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent' });
+	tinymce.init({ selector: ".data-obs", plugins: 'textcolor',toolbar: 'undo redo | styleselect | bold italic forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent' });
+
+	// Recarrega o grid embaixo
+	$('#datagrid').dataTable({ bRetrieve: true }).fnDraw();
+
+</script>
+
+{% endblock %}

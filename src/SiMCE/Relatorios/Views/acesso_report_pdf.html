@@ -1,0 +1,30 @@
+{% import  'Core/Views/components.twig.html' as ui %}
+
+{% set table_style = 'font-family: verdana,arial,sans-serif; font-size:11px; color:#333333; border-width: 1px; border-color: #666666; border-collapse: collapse;' %}
+{% set th_style = 'border-width: 1px; padding: 8px; border-style: solid; border-color: #666666; background-color: #dedede;' %}
+{% set td_style = 'border-width: 1px; padding: 8px; border-style: solid; border-color: #666666; background-color: #ffffff;' %}
+
+{% set title = 'font-family: verdana,arial,sans-serif; font-size:11px; color:#333333;' %}
+<table border="0" style="{{ title }}">
+	<tr><td align="center"><h3>Relatório de Acesso</h3></td></tr>
+</table>
+<br>
+<br>
+<table cellpadding="0" cellspacing="0" border="0" style="{{ table_style }}">
+        <tr>
+                <th style="{{ th_style }}"><b>Usuário</b></th>
+                <th style="{{ th_style }}"><b>IP</b></th>
+                <th style="{{ th_style }}"><b>Login</b></th>
+                <th style="{{ th_style }}"><b>Logout</b></th>
+        </tr>
+	{% for row in rows %}
+	<tr>
+                <td style="{{ td_style }}">{{ row.user }}</td>
+                <td style="{{ td_style }}">{{ row.ip }}</td>
+                <td style="{{ td_style }}">{{ row.login }}</td>
+                <td style="{{ td_style }}">{{ row.logout }}</td>
+	</tr>
+	{% endfor %}
+</table>
+<br>
+<br>

@@ -1,0 +1,42 @@
+<table class="table table-striped table-condensed" style="width: 500px; font-family: tahoma; font-size: 11px;">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>Tipo</th>
+			<th>Alvo</th>
+			<th>Classificação</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for row in rows %}
+			<tr>
+				<td>{{ row.id }}</td>
+				<td>
+					{% if row.tipo == 'A' %}
+						<div id="audio-placeholder-grid-{{ row.id }}" style="cursor: pointer;" onclick="SiMCE.functions.addMiniAudioPlayer('audio-placeholder-grid-{{ row.id }}', 'audio-grid-{{ row.id }}', '/simce/interceptacoes/play/?id={{ row.id }}',event);">
+						<i class="cus-music" alt="Interceptação de Áudio - Clique para ouvir" title="Interceptação de Áudio - Clique para ouvir"></i>&nbsp;
+						</div>
+					{% endif %}
+					{% if row.tipo == 'G' %}
+						<i class="cus-email" alt="Interceptação de SMS" title="Interceptação de SMS"></i>&nbsp;
+					{% endif %}
+				</td>
+				<td>{{ row.alvo }}</td>
+				<td>
+					{% if row.classificacao == 3 %}
+						<i class="cus-flag-red" alt="Alta Prioridade" title="Alta Prioridade"></i>&nbsp;Alta Prioridade
+					{% endif %}
+					{% if row.classificacao == 2 %}
+						<i class="cus-flag-yellow" alt="Média Prioridade" title="Média Prioridade"></i>&nbsp;Média Prioridade
+					{% endif %}
+					{% if row.classificacao == 1 %}
+						<i class="cus-flag-green" alt="Baixa Prioridade" title="Baixa Prioridade"></i>&nbsp;Baixa Prioridade
+					{% endif %}
+					{% if row.classificacao == 0 %}
+						<i class="cus-flag-blue" alt="Sem Prioridade" title="Sem Prioridade"></i>&nbsp;Sem Prioridade
+					{% endif %}
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

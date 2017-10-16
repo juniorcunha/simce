@@ -1,0 +1,83 @@
+{% extends 'Core/Views/modules.twig.html' %}
+{% import  'Core/Views/components.twig.html' as ui %}
+
+{% block title %}Rede de Relacionamentos{% endblock %}
+{% block description %}Permite visualizar as relações entre os contatos{% endblock %}
+
+{% block content %}
+	
+	<button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#grid-filter"><span class="cus-plugin-edit"></span> Filtrar Registros</button>
+	<button type="button" class="btn btn-default btn-sm disabled grid-filter-clean" onclick="SiMCE.functions.cleanFilter();"><span class="cus-delete"></span> Limpar Filtro</button>
+        <button type="button" class="btn btn-default btn-sm" onclick="SiMCE.functions.exportImage();"><span class="cus-image"></span> Exportar imagem</button>
+	<br>
+
+
+	<div id="network-embed" style="width: 100%; height: 400px;">
+		<br><br><br><br><center><img src="assets/img/loader.gif">Carregando Relacionamentos, Alvos e Interlocutores...</center>
+	</div>
+	<div id="network-info" style="position: absolute; top: 30px; right: 0px; height: 400px; width: 250px;"></div>
+	
+	<!-- Filtro -->
+	<div class="modal fade" id="grid-filter" tabindex="-1" role="dialog" aria-labelledby="grid-filter-label" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="grid-filter-label">Filtro de Relacionamentos</h4>
+				</div>
+				<div class="modal-body">
+
+					<form id="form-grid-filter" class="form-horizontal" role="form">
+						<!-- Data Inicial -->
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Data Inicial:</label>
+							<div class="col-sm-10">
+								{{ ui.form_date_picker( "filter[data][start]", 'now'|date_modify('-1 month')|date('d/m/Y') ) }}
+						  </div>
+						</div>
+						<!-- Data Final -->
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Data Final:</label>
+							<div class="col-sm-10">
+								{{ ui.form_date_picker( "filter[data][end]", 'now'|date('d/m/Y') ) }}
+						  </div>
+						</div>
+						<!-- Alvos -->
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Alvos:</label>
+							<div class="col-sm-10">
+								<select name="filter[alvos_id][]" multiple class="form-control">
+								</select>
+							</div>
+						</div>
+						<!-- Interlocutores -->
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Interlocutores:</label>
+							<div class="col-sm-10">
+								<select name="filter[contatos_id][]" multiple class="form-control">
+								</select>
+							</div>
+						</div>
+					</form>
+				  
+				</div>
+				<div class="modal-footer">
+				  <button type="button" class="btn btn-default" data-dismiss="modal"><span class="cus-delete"></span> Cancelar</button>
+				  <button type="button" class="btn btn-default" data-dismiss="modal" onclick="SiMCE.functions.applyFilter();"><span class="cus-plugin-go"></span> Filtrar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Ajusta o filtro -->
+	<script>
+		
+		// Carrega a lista de alvos e interlocutores
+		setTimeout( function() {
+			SiMCE.functions.getTargetList();
+			SiMCE.functions.getContactList();
+		}, 100);
+		
+	</script>
+	
+{% endblock %}

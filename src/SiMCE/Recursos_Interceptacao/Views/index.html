@@ -1,0 +1,33 @@
+{% extends 'Core/Views/modules.twig.html' %}
+{% import  'Core/Views/components.twig.html' as ui %}
+
+{% block title %}Gestão de Recursos{% endblock %}
+{% block description %}Alocação de canais e definição dos administradores{% endblock %}
+
+{% block content %}
+
+	<button type="button" class="btn btn-default btn-sm btn-add disabled" onclick="SiMCE.functions.submit();"><span class="cus-disk"></span> Salvar</button>
+	
+	<br>
+
+	<form id="form-rec-intr" class="form-horizontal" role="form" style="margin-top: 20px;">
+
+		<!-- Seleciona a unidade -->
+		<div class="form-group">
+			<label class="col-sm-1 control-label">Unidade: </label>
+			<div class="col-sm-3 col-sm-offset-1">
+				<select class="form-control" name="data[unidade]" onchange="SiMCE.functions.showForm();">
+					<option value='0' selected>-- Selecione uma unidade --</option>
+					{% for obj in unidades %}
+						<option value="{{ obj.id }}">{{obj.nome}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+		
+		<!-- Formulário de recursos -->
+		<div class="form-resources"></div>
+		
+	</form>
+	
+{% endblock %}

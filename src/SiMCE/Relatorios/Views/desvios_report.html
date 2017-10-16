@@ -1,0 +1,74 @@
+{% import  'Core/Views/components.twig.html' as ui %}
+
+<!-- Conteúdo a ser enviado via formulário -->
+<input name="data[conteudo]" type="hidden" value="{{ content }}">
+
+<br><br>
+
+<table id="datagrid" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered table-condensed">
+	<thead>
+		<tr>
+			<th>Alvo</th>
+			<th>Responsáveis</th>
+			<th>Número Desviado</th>
+			<th>Recurso</th>
+			<th>Início</th>
+			<th>Fim</th>
+			<th>Duração</th>
+			<th>ID</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for row in rows %}
+			<tr>
+				<td>{{ row.alvo }}</td>
+				<td>{{ row.responsaveis }}</td>
+				<td>{{ row.num_desvio }}</td>
+				<td>{{ row.recurso }}</td>
+				<td>{{ row.inicio }}</td>
+				<td>{{ row.fim }}</td>
+				<td>{{ row.duracao }}</td>
+				<td>{{ row.id }}</td>
+			</tr>
+		{% else %}
+			<tr>
+				<td colspan="8"><center>Nenhum desvio no período</center></td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+<!-- Ajusta os itens de navegação -->
+<script>
+	
+	// Seleciona primeira aba
+	$(".nav-tabs-form a:first").tab("show");
+	
+	// Botão voltar
+	$(".btn-prev").removeClass("hidden").off().on( 'click', SiMCE.functions.loadMenu );
+	// Botão avançar
+	$(".btn-next").addClass("hidden");
+	// Botão gerar
+	$(".btn-run").addClass("hidden");
+	// Botão pdf
+	$(".btn-pdf").removeClass("hidden").on('click', SiMCE.functions.genPDFCallForwardReport );
+
+	// Popula o grid
+	/*var cfg = SiMCE.getGridConfig();
+	cfg.aoColumns = [
+		{ mData: "alvo", sWidth: "70px" },
+		{ mData: "inicio", sWidth: "70px" },
+		{ mData: "fim", sWidth: "70px" },
+		{ mData: "recurso", sWidth: "70px" },
+		{ mData: "identificacao", sWidth: "70px" },
+		{ mData: "vara", sWidth: "70px" },
+		{ mData: "responsavel", sWidth: "70px" },
+		{ mData: "desvio", sWidth: "70px" }
+	];
+	cfg.bServerSide = false;
+	cfg.bSort       = true;*/
+	//cfg.aaSorting   = [[ 1, "asc" ]];
+	//$('#datagrid').dataTable(cfg);
+
+</script>
+

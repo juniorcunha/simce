@@ -1,0 +1,48 @@
+{% import  'Core/Views/components.twig.html' as ui %}
+
+<input type="hidden" name="data[tipo]" value="operacao">
+<input type="hidden" name="data[modo]" value="1">
+
+<div class="form-group">
+	<label class="col-sm-2 control-label">Período Inicial:</label>
+	<div class="col-sm-4">
+		{{ ui.form_date_picker( "data[inicio]", 'now'|date_modify('-1 month')|date('d/m/Y'), 0 ) }}
+	</div>
+</div>
+
+<div class="form-group">
+	<label class="col-sm-2 control-label">Período Final:</label>
+	<div class="col-sm-4">
+		{{ ui.form_date_picker( "data[fim]", 'now'|date('d/m/Y'), 0 ) }}
+	</div>
+</div>
+
+<!--
+<div class="form-group">
+	<label class="col-sm-2 control-label">Modo:</label>
+	<div class="col-sm-4">
+		<select name="data[modo]" class="form-control">
+		  <option value="1">Simplificado</option>
+		  <option value="2">Detalhado</option>
+		</select>
+	</div>
+</div>
+<div class="form-group">
+	<div class="col-sm-1 col-sm-offset-2"><b>Simplificado:</b></div>
+	<div class="col-sm-4"><small>Gera um relatório com informações resumidas da operação.</small></div>
+</div>
+<div class="form-group">
+	<div class="col-sm-1 col-sm-offset-2"><b>Detalhado:</b></div>
+	<div class="col-sm-4"><small>Traz a relação completa das informações no período como registros, transcrições, alvos, etc.</small></div>
+</div>
+-->
+
+<!-- Ajusta os itens de navegação -->
+<script>
+	// Botão voltar
+	$(".btn-prev").removeClass("disabled").off().on( 'click', SiMCE.functions.loadMenu );
+	// Botão avançar
+	$(".btn-next").addClass("hidden");
+	// Botão gerar
+	$(".btn-run").removeClass("hidden");
+</script>

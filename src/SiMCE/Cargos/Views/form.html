@@ -1,0 +1,134 @@
+{% extends 'Core/Views/modal_form.twig.html' %}
+{% import  'Core/Views/components.twig.html' as ui %}
+
+{% block title %}Adicionar um Cargo/Perfil{% endblock %}
+
+{% block content %}
+
+<form id="form-cargos" class="form-horizontal" role="form">
+	{% if data.id %}
+		<input name="data[id]" type="hidden" value="{{ data.id }}">
+	{% endif %}
+	<div class="form-group">
+		<label class="col-sm-1 control-label">Nome:</label>
+		<div class="col-sm-10 col-sm-offset-1">
+			<input name="data[nome]" type="text" class="form-control" value="{% if data.nome %}{{ data.nome }}{% endif %}">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-1 control-label">Descrição:</label>
+		<div class="col-sm-10 col-sm-offset-1">
+			<input name="data[descricao]" type="text" class="form-control" value="{% if data.descricao %}{{ data.descricao }}{% endif %}">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-1 control-label">Permissões:</label>
+	</div>
+	<input name="data[acao]" type="hidden" value="{% if data.acao %}{{ data.acao }}{% endif %}">
+	<div id="jstree_demo_div" class="col-sm-offset-1"></div>
+	
+</form>
+
+<script>
+$('#jstree_demo_div').on('changed.jstree', function (e, data) {
+	var i, j, r = [];
+	for(i = 0, j = data.selected.length; i < j; i++) {
+		r.push(data.instance.get_node(data.selected[i]).id);
+	}
+	$('*[name="data[acao]"]').val( r.join(',') );
+}).jstree({
+	plugins: ['checkbox','types','state'],
+	core:    {
+		animation: 100,
+		data : [
+			//----------------------------------
+			//
+			// Interceptações
+			//
+			//----------------------------------
+			{
+				id:       'MOD_INTERCEPTION',
+				text:     'Interceptações',
+				state:    { opened: true, selected: {% if 'MOD_INTERCEPTION' in data.roles %}true{% else %}false{% endif %} },
+				icon:     'glyphicon glyphicon-list',
+				children: [
+					{ id: 'ACTION_INTERCEPTION_ONLINE',        icon: 'glyphicon glyphicon-cog', text: 'Painel Online',                 state: { selected: {% if 'ACTION_INTERCEPTION_ONLINE' in data.roles %}true{% else %}false{% endif %} }},
+					{ id: 'ACTION_INTERCEPTION_TRANSCRIPTION', icon: 'glyphicon glyphicon-cog', text: 'Transcrição e Identificação',   state: { selected: {% if 'ACTION_INTERCEPTION_TRANSCRIPTION' in data.roles %}true{% else %}false{% endif %} }},
+					{ id: 'ACTION_INTERCEPTION_DEFINITIONS',   icon: 'glyphicon glyphicon-cog', text: 'Definir Classificação',         state: { selected: {% if 'ACTION_INTERCEPTION_DEFINITIONS' in data.roles %}true{% else %}false{% endif %} }},
+					{ id: 'ACTION_INTERCEPTION_OBS',           icon: 'glyphicon glyphicon-cog', text: 'Adicionar Observação',          state: { selected: {% if 'ACTION_INTERCEPTION_OBS' in data.roles %}true{% else %}false{% endif %} }},
+					{ id: 'ACTION_INTERCEPTION_DOWNLOAD',      icon: 'glyphicon glyphicon-cog', text: 'Download',                      state: { selected: {% if 'ACTION_INTERCEPTION_DOWNLOAD' in data.roles %}true{% else %}false{% endif %} }}
+				]
+			},
+			//----------------------------------
+			//
+			// Cronologia de Eventos
+			//
+			//----------------------------------
+			{
+				id:       'MOD_TIMELINE',
+				text:     'Cronologia de Eventos',
+				state:    { opened: true, selected: {% if 'MOD_TIMELINE' in data.roles %}true{% else %}false{% endif %} },
+				icon:     'glyphicon glyphicon-list',
+				children: [
+					{ id: 'ACTION_TIMELINE_READ',   icon: 'glyphicon glyphicon-cog', text: 'Visualização', state: { selected: {% if 'ACTION_TIMELINE_READ' in data.roles %}true{% else %}false{% endif %} }},
+					{ id: 'ACTION_TIMELINE_WRITE',  icon: 'glyphicon glyphicon-cog', text: 'Edição',       state: { selected: {% if 'ACTION_TIMELINE_WRITE' in data.roles %}true{% else %}false{% endif %} }}
+				]
+			},
+			//----------------------------------
+			//
+			// Dicionário de Expressões
+			//
+			//----------------------------------
+			/*{
+				id:       'MOD_DICTIONARY',
+				text:     'Dicionário de Expressões',
+				state:    { opened: true, selected: {% if 'MOD_DICTIONARY' in data.roles %}true{% else %}false{% endif %} },
+				icon:     'glyphicon glyphicon-list'
+			},*/
+			//----------------------------------
+			//
+			// Rede de Relacionamentos
+			//
+			//----------------------------------
+			{
+				id:       'MOD_NETWORK',
+				text:     'Rede de Relacionamentos',
+				state:    { opened: true, selected: {% if 'MOD_NETWORK' in data.roles %}true{% else %}false{% endif %} },
+				icon:     'glyphicon glyphicon-list'
+			},
+			//----------------------------------
+			//
+			// Relatórios
+			//
+			//----------------------------------
+			{
+				id:       'MOD_REPORTS',
+				text:     'Relatórios',
+				state:    { opened: true, selected: {% if 'MOD_REPORTS' in data.roles %}true{% else %}false{% endif %} },
+				icon:     'glyphicon glyphicon-list',
+				children: [
+					{ id: 'ACTION_REPORTS_JUDICIAL',           icon: 'glyphicon glyphicon-cog', text: 'Judicial',                      state: { selected: {% if 'ACTION_REPORTS_JUDICIAL' in data.roles %}true{% else %}false{% endif %} }},
+					{ id: 'ACTION_REPORTS_INTERACTIVE',        icon: 'glyphicon glyphicon-cog', text: 'Interativo',                      state: { selected: {% if 'ACTION_REPORTS_INTERACTIVE' in data.roles %}true{% else %}false{% endif %} }}
+				]
+			},
+			//----------------------------------
+			//
+			// Backup
+			//
+			//----------------------------------
+			{
+				id:       'MOD_BACKUP',
+				text:     'Backup',
+				state:    { opened: true, selected: false },
+				icon:     'glyphicon glyphicon-list'
+			}
+		]
+	},
+	checkbox: {
+		keep_selected_style: false,
+		whole_node:          false
+	}
+});
+</script>
+
+{% endblock %}

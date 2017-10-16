@@ -1,0 +1,551 @@
+{% extends 'Core/Views/modal_form.twig.html' %}
+{% import  'Core/Views/components.twig.html' as ui %}
+
+{% block title %}Adicionar um Interlocutor{% endblock %}
+{% block style %}style="width: 900px;"{% endblock %}
+
+{% block content %}
+
+<form id="form-contatos" class="form-horizontal" role="form">
+	{% if data.id %}
+		<input name="data[id]" type="hidden" value="{{ data.id }}">
+	{% endif %}
+	
+	<input name="data[alvo]" type="hidden" value="0">
+
+	<!-- Abas do Formulário -->
+	<ul class="nav nav-tabs nav-tabs-form">
+		<li><a href="#form-general" data-toggle="tab"><span class="cus-page-white-text-width"></span> Geral</a></li>
+		<li><a href="#form-complementares" data-toggle="tab"><span class="cus-table-add"></span> Informações Complementares</a></li>
+		<li><a href="#form-veiculos" data-toggle="tab"><span class="cus-user-go"></span> Veículos</a></li>
+		<li><a href="#form-imoveis" data-toggle="tab"><span class="cus-building-go"></span> Imóveis</a></li>
+		<li><a href="#form-bancarios" data-toggle="tab"><span class="cus-creditcards"></span> Inf. Bancárias</a></li>
+	</ul>
+	
+	<!-- Conteúdo das Abas -->
+	<div class="tab-content">
+		
+		<!-- Geral -->
+		<div class="tab-pane active" id="form-general">
+			
+			<br>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">Nome:</label>
+				<div class="col-sm-4 col-sm-offset-1">
+					<input name="data[nome]" type="text" class="form-control" value="{% if data.nome %}{{ data.nome }}{% endif %}">
+				</div>
+				<div style="position: absolute; right: 150px; margin-top: 8px;">
+					<center>
+					<table border='0'>
+						<tr>
+							<td align="center">
+								<img class="preview-photo" style="height: 100px; cursor: pointer;" onclick="$('input:file').trigger('click');" src="{% if data.foto %}{{ data.foto }}{% else %}data:image/jpeg;base64,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{% endif %}">
+							</td>
+						</tr>
+						<tr>
+							<td align="center"><small>( Clique na imagem para alterar )</small></td>
+						</tr>
+					</table>
+					</center>
+				</div>
+				<input type="file" style="display: none;" onchange="SiMCE.getFileContent(event, 'upload-photo', 'preview-photo');">
+				<input name="data[foto]" type="hidden" class="upload-photo" value="">
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">Apelido:</label>
+				<div class="col-sm-4 col-sm-offset-1">
+					<input name="data[apelido]" type="text" class="form-control" value="{% if data.apelido %}{{ data.apelido }}{% endif %}">
+				</div>
+                              
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">Endereço:</label>
+				<div class="col-sm-4 col-sm-offset-1">
+					<input name="data[endereco]" type="text" class="form-control input-sm" value="{% if data.endereco %}{{ data.endereco }}{% endif %}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">Cidade:</label>
+				<div class="col-sm-4 col-sm-offset-1">
+					<input name="data[cidade]" type="text" class="form-control input-sm" value="{% if data.cidade %}{{ data.cidade }}{% endif %}">
+				</div>
+				<label class="col-sm-1 control-label">Estado:</label>
+				<div class="col-sm-5">
+					{% if data.estado %}
+						{{ ui.form_combo_estados("data[estado]", data.estado) }}
+					{% else %}
+						{{ ui.form_combo_estados("data[estado]") }}
+					{% endif %}
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">RG:</label>
+				<div class="col-sm-4 col-sm-offset-1">
+					<input name="data[rg]" type="text" class="form-control input-sm" value="{% if data.rg %}{{ data.rg }}{% endif %}">
+				</div>
+				<label class="col-sm-1 control-label">CPF:</label>
+				<div class="col-sm-5">
+					<input name="data[cpf]" type="text" class="form-control input-sm" value="{% if data.cpf %}{{ data.cpf }}{% endif %}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">Telefone:</label>
+				<div class="col-sm-4 col-sm-offset-1">
+					<input name="data[telefone]" type="text" class="form-control input-sm phone-form" value="{% if data.telefone %}{{ data.telefone }}{% endif %}">
+				</div>
+				<label class="col-sm-1 control-label">Sexo:</label>
+				<div class="col-sm-5">
+					<select class="form-control input-sm" name="data[sexo]">
+						<option value="M" {% if data.sexo == 'M' %}selected{% endif %}>Masculino</option>
+						<option value="F" {% if data.sexo == 'F' %}selected{% endif %}>Feminino</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">Observações:</label>
+				<div class="col-sm-10 col-sm-offset-1">
+					<textarea name="data[observacoes]" class="form-control input-sm" rows="4">{% if data.observacoes %}{{ data.observacoes }}{% endif %}</textarea>
+				</div>
+			</div>
+
+		</div>
+			
+		<!-- Complementares -->
+		<div class="tab-pane active" id="form-complementares">
+			
+			<br>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Data de Nascimento:</label>
+				<div class="col-sm-4">
+					{% if data.nascimento %}
+						{{ ui.form_date_picker( "data[nascimento]", data.nascimento) }}
+					{% else %}
+						{{ ui.form_date_picker( "data[nascimento]", 'now'|date('d/m/Y')) }}
+					{% endif %}
+				</div>
+				<label class="col-sm-2 control-label">Estado Civíl:</label>
+				<div class="col-sm-4">
+					<select class="form-control input-sm" name="data[estado_civil]">
+						<option value="S" {% if data.estado_civil == 'S' %}selected{% endif %}>Solteiro</option>
+						<option value="C" {% if data.estado_civil == 'C' %}selected{% endif %}>Casado</option>
+						<option value="SJ" {% if data.estado_civil == 'SJ' %}selected{% endif %}>Separado Judicialmente</option>
+						<option value="D" {% if data.estado_civil == 'D' %}selected{% endif %}>Divorciado</option>
+						<option value="V" {% if data.estado_civil == 'V' %}selected{% endif %}>Vivúvo</option>
+					</select>
+				</div>
+			</div>
+			<hr>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Empresa:</label>
+				<div class="col-sm-4">
+					<input name="data[empresa]" type="text" class="form-control" value="{% if data.empresa %}{{ data.empresa }}{% endif %}">
+				</div>
+				<label class="col-sm-2 control-label">Cargo/Função:</label>
+				<div class="col-sm-4">
+					<input name="data[cargo]" type="text" class="form-control" value="{% if data.cargo %}{{ data.cargo }}{% endif %}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Endereço:</label>
+				<div class="col-sm-4">
+					<input name="data[end_empresa]" type="text" class="form-control" value="{% if data.end_empresa %}{{ data.end_empresa }}{% endif %}">
+				</div>
+				<label class="col-sm-2 control-label">Telefone:</label>
+				<div class="col-sm-4">
+					<input name="data[tel_empresa]" type="text" class="form-control" value="{% if data.tel_empresa %}{{ data.tel_empresa }}{% endif %}">
+				</div>
+			</div>
+			<hr>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Escolaridade:</label>
+				<div class="col-sm-4">
+					<select class="form-control input-sm" name="data[escolaridade]">
+						<option value="N" {% if data.escolaridade == 'N' %}selected{% endif %}>Nenhuma</option>
+						<option value="1GI" {% if data.escolaridade == '1GI' %}selected{% endif %}>1º Grau Incompleto</option>
+						<option value="1GC" {% if data.escolaridade == '1GC' %}selected{% endif %}>1º Grau Completo</option>
+						<option value="2GI" {% if data.escolaridade == '2GI' %}selected{% endif %}>2º Grau Incompleto</option>
+						<option value="2GC" {% if data.escolaridade == '2GC' %}selected{% endif %}>2º Grau Completo</option>
+						<option value="SI" {% if data.escolaridade == 'SI' %}selected{% endif %}>Superior Incompleto</option>
+						<option value="SC" {% if data.escolaridade == 'SC' %}selected{% endif %}>Superior Completo</option>
+						<option value="E" {% if data.escolaridade == 'E' %}selected{% endif %}>Especialização</option>
+						<option value="M" {% if data.escolaridade == 'M' %}selected{% endif %}>Mestrado</option>
+						<option value="D" {% if data.escolaridade == 'D' %}selected{% endif %}>Doutorado</option>
+					</select>
+				</div>
+			</div>
+		</div>
+			
+		<!-- Veículos -->
+		<div class="tab-pane active" id="form-veiculos">
+			
+			<br>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Tipo:</label>
+				<div class="col-sm-4">
+					<select class="form-control input-sm" name="data[veiculo1_tipo]">
+						<option value="N" {% if data.veiculo1_tipo == 'N' %}selected{% endif %}>Não Possui</option>
+						<option value="CO" {% if data.veiculo1_tipo == 'CO' %}selected{% endif %}>Carro</option>
+						<option value="CE" {% if data.veiculo1_tipo == 'CE' %}selected{% endif %}>Camionete</option>
+						<option value="CA" {% if data.veiculo1_tipo == 'CA' %}selected{% endif %}>Caminhão</option>
+						<option value="FU" {% if data.veiculo1_tipo == 'FU' %}selected{% endif %}>Furgão</option>
+						<option value="VA" {% if data.veiculo1_tipo == 'VA' %}selected{% endif %}>Van</option>
+						<option value="MO" {% if data.veiculo1_tipo == 'MO' %}selected{% endif %}>Micro Ônibus</option>
+						<option value="ON" {% if data.veiculo1_tipo == 'ON' %}selected{% endif %}>Ônibus</option>
+						<option value="TR" {% if data.veiculo1_tipo == 'TR' %}selected{% endif %}>Triciclo</option>
+					</select>
+				</div>
+				<label class="col-sm-2 control-label">Fabricante:</label>
+				<div class="col-sm-4">
+					<input name="data[veiculo1_fabricante]" type="text" class="form-control" value="{% if data.veiculo1_fabricante %}{{ data.veiculo1_fabricante }}{% endif %}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">Modelo:</label>
+				<div class="col-sm-3">
+					<input name="data[veiculo1_modelo]" type="text" class="form-control" value="{% if data.veiculo1_modelo %}{{ data.veiculo1_modelo }}{% endif %}">
+				</div>
+				<label class="col-sm-1 control-label">Ano</label>
+				<div class="col-sm-3">
+					<input name="data[veiculo1_ano]" type="text" class="form-control" value="{% if data.veiculo1_ano %}{{ data.veiculo1_ano }}{% endif %}">
+				</div>
+				<label class="col-sm-1 control-label">Placa</label>
+				<div class="col-sm-3">
+					<input name="data[veiculo1_placa]" type="text" class="form-control" value="{% if data.veiculo1_placa %}{{ data.veiculo1_placa }}{% endif %}">
+				</div>
+			</div>
+			<hr>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Tipo:</label>
+				<div class="col-sm-4">
+					<select class="form-control input-sm" name="data[veiculo2_tipo]">
+						<option value="N" {% if data.veiculo2_tipo == 'N' %}selected{% endif %}>Não Possui</option>
+						<option value="CO" {% if data.veiculo2_tipo == 'CO' %}selected{% endif %}>Carro</option>
+						<option value="CE" {% if data.veiculo2_tipo == 'CE' %}selected{% endif %}>Camionete</option>
+						<option value="CA" {% if data.veiculo2_tipo == 'CA' %}selected{% endif %}>Caminhão</option>
+						<option value="FU" {% if data.veiculo2_tipo == 'FU' %}selected{% endif %}>Furgão</option>
+						<option value="VA" {% if data.veiculo2_tipo == 'VA' %}selected{% endif %}>Van</option>
+						<option value="MO" {% if data.veiculo2_tipo == 'MO' %}selected{% endif %}>Micro Ônibus</option>
+						<option value="ON" {% if data.veiculo2_tipo == 'ON' %}selected{% endif %}>Ônibus</option>
+						<option value="TR" {% if data.veiculo2_tipo == 'TR' %}selected{% endif %}>Triciclo</option>
+					</select>
+				</div>
+				<label class="col-sm-2 control-label">Fabricante:</label>
+				<div class="col-sm-4">
+					<input name="data[veiculo2_fabricante]" type="text" class="form-control" value="{% if data.veiculo2_fabricante %}{{ data.veiculo2_fabricante }}{% endif %}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">Modelo:</label>
+				<div class="col-sm-3">
+					<input name="data[veiculo2_modelo]" type="text" class="form-control" value="{% if data.veiculo2_modelo %}{{ data.veiculo2_modelo }}{% endif %}">
+				</div>
+				<label class="col-sm-1 control-label">Ano</label>
+				<div class="col-sm-3">
+					<input name="data[veiculo2_ano]" type="text" class="form-control" value="{% if data.veiculo2_ano %}{{ data.veiculo2_ano }}{% endif %}">
+				</div>
+				<label class="col-sm-1 control-label">Placa</label>
+				<div class="col-sm-3">
+					<input name="data[veiculo2_placa]" type="text" class="form-control" value="{% if data.veiculo2_placa %}{{ data.veiculo2_placa }}{% endif %}">
+				</div>
+			</div>
+			<hr>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Tipo:</label>
+				<div class="col-sm-4">
+					<select class="form-control input-sm" name="data[veiculo3_tipo]">
+						<option value="N" {% if data.veiculo3_tipo == 'N' %}selected{% endif %}>Não Possui</option>
+						<option value="CO" {% if data.veiculo3_tipo == 'CO' %}selected{% endif %}>Carro</option>
+						<option value="CE" {% if data.veiculo3_tipo == 'CE' %}selected{% endif %}>Camionete</option>
+						<option value="CA" {% if data.veiculo3_tipo == 'CA' %}selected{% endif %}>Caminhão</option>
+						<option value="FU" {% if data.veiculo3_tipo == 'FU' %}selected{% endif %}>Furgão</option>
+						<option value="VA" {% if data.veiculo3_tipo == 'VA' %}selected{% endif %}>Van</option>
+						<option value="MO" {% if data.veiculo3_tipo == 'MO' %}selected{% endif %}>Micro Ônibus</option>
+						<option value="ON" {% if data.veiculo3_tipo == 'ON' %}selected{% endif %}>Ônibus</option>
+						<option value="TR" {% if data.veiculo3_tipo == 'TR' %}selected{% endif %}>Triciclo</option>
+					</select>
+				</div>
+				<label class="col-sm-2 control-label">Fabricante:</label>
+				<div class="col-sm-4">
+					<input name="data[veiculo3_fabricante]" type="text" class="form-control" value="{% if data.veiculo3_fabricante %}{{ data.veiculo3_fabricante }}{% endif %}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">Modelo:</label>
+				<div class="col-sm-3">
+					<input name="data[veiculo3_modelo]" type="text" class="form-control" value="{% if data.veiculo3_modelo %}{{ data.veiculo3_modelo }}{% endif %}">
+				</div>
+				<label class="col-sm-1 control-label">Ano</label>
+				<div class="col-sm-3">
+					<input name="data[veiculo3_ano]" type="text" class="form-control" value="{% if data.veiculo3_ano %}{{ data.veiculo3_ano }}{% endif %}">
+				</div>
+				<label class="col-sm-1 control-label">Placa</label>
+				<div class="col-sm-3">
+					<input name="data[veiculo3_placa]" type="text" class="form-control" value="{% if data.veiculo3_placa %}{{ data.veiculo3_placa }}{% endif %}">
+				</div>
+			</div>
+		</div>
+		
+		<!-- Imóveis -->
+		<div class="tab-pane active" id="form-imoveis">
+			
+			<br>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Tipo:</label>
+				<div class="col-sm-4">
+					<select class="form-control input-sm" name="data[imovel1_tipo]">
+						<option value="N" {% if data.imovel1_tipo == 'N' %}selected{% endif %}>Não Possui</option>
+						<option value="C" {% if data.imovel1_tipo == 'C' %}selected{% endif %}>Casa</option>
+						<option value="A" {% if data.imovel1_tipo == 'A' %}selected{% endif %}>Apartamento</option>
+						<option value="T" {% if data.imovel1_tipo == 'T' %}selected{% endif %}>Terreno</option>
+					</select>
+				</div>
+				<label class="col-sm-2 control-label">Situação:</label>
+				<div class="col-sm-4">
+					<select class="form-control input-sm" name="data[imovel1_situacao]">
+						<option value="N" {% if data.imovel1_situacao == 'N' %}selected{% endif %}>-</option>
+						<option value="A" {% if data.imovel1_situacao == 'A' %}selected{% endif %}>Alugado</option>
+						<option value="P" {% if data.imovel1_situacao == 'P' %}selected{% endif %}>Próprio</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">Endereço:</label>
+				<div class="col-sm-4">
+					<input name="data[imovel1_endereco]" type="text" class="form-control" value="{% if data.imovel1_endereco %}{{ data.imovel1_endereco }}{% endif %}">
+				</div>
+				<label class="col-sm-1 control-label">Cidade</label>
+				<div class="col-sm-3">
+					<input name="data[imovel1_cidade]" type="text" class="form-control" value="{% if data.imovel1_cidade %}{{ data.imovel1_cidade }}{% endif %}">
+				</div>
+				<label class="col-sm-1 control-label">Estado</label>
+				<div class="col-sm-2">
+					{% if data.imovel1_estado %}
+						{{ ui.form_combo_estados("data[imovel1_estado]", data.imovel1_estado) }}
+					{% else %}
+						{{ ui.form_combo_estados("data[imovel1_estado]") }}
+					{% endif %}
+				</div>
+			</div>
+			<hr>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Tipo:</label>
+				<div class="col-sm-4">
+					<select class="form-control input-sm" name="data[imovel2_tipo]">
+						<option value="N" {% if data.imovel2_tipo == 'N' %}selected{% endif %}>Não Possui</option>
+						<option value="C" {% if data.imovel2_tipo == 'C' %}selected{% endif %}>Casa</option>
+						<option value="A" {% if data.imovel2_tipo == 'A' %}selected{% endif %}>Apartamento</option>
+						<option value="T" {% if data.imovel2_tipo == 'T' %}selected{% endif %}>Terreno</option>
+					</select>
+				</div>
+				<label class="col-sm-2 control-label">Situação:</label>
+				<div class="col-sm-4">
+					<select class="form-control input-sm" name="data[imovel2_situacao]">
+						<option value="N" {% if data.imovel2_situacao == 'N' %}selected{% endif %}>-</option>
+						<option value="A" {% if data.imovel2_situacao == 'A' %}selected{% endif %}>Alugado</option>
+						<option value="P" {% if data.imovel2_situacao == 'P' %}selected{% endif %}>Próprio</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">Endereço:</label>
+				<div class="col-sm-4">
+					<input name="data[imovel2_endereco]" type="text" class="form-control" value="{% if data.imovel2_endereco %}{{ data.imovel2_endereco }}{% endif %}">
+				</div>
+				<label class="col-sm-1 control-label">Cidade</label>
+				<div class="col-sm-3">
+					<input name="data[imovel2_cidade]" type="text" class="form-control" value="{% if data.imovel2_cidade %}{{ data.imovel2_cidade }}{% endif %}">
+				</div>
+				<label class="col-sm-1 control-label">Estado</label>
+				<div class="col-sm-2">
+					{% if data.imovel2_estado %}
+						{{ ui.form_combo_estados("data[imovel2_estado]", data.imovel2_estado) }}
+					{% else %}
+						{{ ui.form_combo_estados("data[imovel2_estado]") }}
+					{% endif %}
+				</div>
+			</div>
+			<hr>
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Tipo:</label>
+				<div class="col-sm-4">
+					<select class="form-control input-sm" name="data[imovel3_tipo]">
+						<option value="N" {% if data.imovel3_tipo == 'N' %}selected{% endif %}>Não Possui</option>
+						<option value="C" {% if data.imovel3_tipo == 'C' %}selected{% endif %}>Casa</option>
+						<option value="A" {% if data.imovel3_tipo == 'A' %}selected{% endif %}>Apartamento</option>
+						<option value="T" {% if data.imovel3_tipo == 'T' %}selected{% endif %}>Terreno</option>
+					</select>
+				</div>
+				<label class="col-sm-2 control-label">Situação:</label>
+				<div class="col-sm-4">
+					<select class="form-control input-sm" name="data[imovel3_situacao]">
+						<option value="N" {% if data.imovel3_situacao == 'N' %}selected{% endif %}>-</option>
+						<option value="A" {% if data.imovel3_situacao == 'A' %}selected{% endif %}>Alugado</option>
+						<option value="P" {% if data.imovel3_situacao == 'P' %}selected{% endif %}>Próprio</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">Endereço:</label>
+				<div class="col-sm-4">
+					<input name="data[imovel3_endereco]" type="text" class="form-control" value="{% if data.imovel3_endereco %}{{ data.imovel3_endereco }}{% endif %}">
+				</div>
+				<label class="col-sm-1 control-label">Cidade</label>
+				<div class="col-sm-3">
+					<input name="data[imovel3_cidade]" type="text" class="form-control" value="{% if data.imovel3_cidade %}{{ data.imovel3_cidade }}{% endif %}">
+				</div>
+				<label class="col-sm-1 control-label">Estado</label>
+				<div class="col-sm-2">
+					{% if data.imovel3_estado %}
+						{{ ui.form_combo_estados("data[imovel3_estado]", data.imovel3_estado) }}
+					{% else %}
+						{{ ui.form_combo_estados("data[imovel3_estado]") }}
+					{% endif %}
+				</div>
+			</div>
+		</div>
+		
+		<!-- Informações Bancárias -->
+		<div class="tab-pane active" id="form-bancarios">
+			<br>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">Banco:</label>
+				<div class="col-sm-3">
+					<input name="data[bancario1_banco]" type="text" class="form-control" value="{% if data.bancario1_banco %}{{ data.bancario1_banco }}{% endif %}">
+				</div>
+				<label class="col-sm-1 control-label">Agência:</label>
+				<div class="col-sm-3">
+					<input name="data[bancario1_agencia]" type="text" class="form-control" value="{% if data.bancario1_agencia %}{{ data.bancario1_agencia }}{% endif %}">
+				</div>
+				<label class="col-sm-1 control-label">Conta:</label>
+				<div class="col-sm-3">
+					<input name="data[bancario1_conta]" type="text" class="form-control" value="{% if data.bancario1_conta %}{{ data.bancario1_conta }}{% endif %}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">Correntista:</label>
+				<div class="col-sm-3">
+					<input name="data[bancario1_correntista]" type="text" class="form-control" value="{% if data.bancario1_correntista %}{{ data.bancario1_correntista }}{% endif %}">
+				</div>
+				<label class="col-sm-1 control-label">Tipo:</label>
+				<div class="col-sm-3">
+					<input name="data[bancario1_tipo]" type="text" class="form-control" value="{% if data.bancario1_tipo %}{{ data.bancario1_tipo }}{% endif %}">
+				</div>
+				<label class="col-sm-1 control-label">CPF/CNPJ:</label>
+				<div class="col-sm-3">
+					<input name="data[bancario1_cpfcnpj]" type="text" class="form-control" value="{% if data.bancario1_cpfcnpj %}{{ data.bancario1_cpfcnpj }}{% endif %}">
+				</div>
+			</div>
+			<hr>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">Banco:</label>
+				<div class="col-sm-3">
+					<input name="data[bancario2_banco]" type="text" class="form-control" value="{% if data.bancario2_banco %}{{ data.bancario2_banco }}{% endif %}">
+				</div>
+				<label class="col-sm-1 control-label">Agência:</label>
+				<div class="col-sm-3">
+					<input name="data[bancario2_agencia]" type="text" class="form-control" value="{% if data.bancario2_agencia %}{{ data.bancario2_agencia }}{% endif %}">
+				</div>
+				<label class="col-sm-1 control-label">Conta:</label>
+				<div class="col-sm-3">
+					<input name="data[bancario2_conta]" type="text" class="form-control" value="{% if data.bancario2_conta %}{{ data.bancario2_conta }}{% endif %}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">Correntista:</label>
+				<div class="col-sm-3">
+					<input name="data[bancario2_correntista]" type="text" class="form-control" value="{% if data.bancario2_correntista %}{{ data.bancario2_correntista }}{% endif %}">
+				</div>
+				<label class="col-sm-1 control-label">Tipo:</label>
+				<div class="col-sm-3">
+					<input name="data[bancario2_tipo]" type="text" class="form-control" value="{% if data.bancario2_tipo %}{{ data.bancario2_tipo }}{% endif %}">
+				</div>
+				<label class="col-sm-1 control-label">CPF/CNPJ:</label>
+				<div class="col-sm-3">
+					<input name="data[bancario2_cpfcnpj]" type="text" class="form-control" value="{% if data.bancario2_cpfcnpj %}{{ data.bancario2_cpfcnpj }}{% endif %}">
+				</div>
+			</div>
+			<hr>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">Banco:</label>
+				<div class="col-sm-3">
+					<input name="data[bancario3_banco]" type="text" class="form-control" value="{% if data.bancario3_banco %}{{ data.bancario3_banco }}{% endif %}">
+				</div>
+				<label class="col-sm-1 control-label">Agência:</label>
+				<div class="col-sm-3">
+					<input name="data[bancario3_agencia]" type="text" class="form-control" value="{% if data.bancario3_agencia %}{{ data.bancario3_agencia }}{% endif %}">
+				</div>
+				<label class="col-sm-1 control-label">Conta:</label>
+				<div class="col-sm-3">
+					<input name="data[bancario3_conta]" type="text" class="form-control" value="{% if data.bancario3_conta %}{{ data.bancario3_conta }}{% endif %}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">Correntista:</label>
+				<div class="col-sm-3">
+					<input name="data[bancario3_correntista]" type="text" class="form-control" value="{% if data.bancario3_correntista %}{{ data.bancario3_correntista }}{% endif %}">
+				</div>
+				<label class="col-sm-1 control-label">Tipo:</label>
+				<div class="col-sm-3">
+					<input name="data[bancario3_tipo]" type="text" class="form-control" value="{% if data.bancario3_tipo %}{{ data.bancario3_tipo }}{% endif %}">
+				</div>
+				<label class="col-sm-1 control-label">CPF/CNPJ:</label>
+				<div class="col-sm-3">
+					<input name="data[bancario3_cpfcnpj]" type="text" class="form-control" value="{% if data.bancario3_cpfcnpj %}{{ data.bancario3_cpfcnpj }}{% endif %}">
+				</div>
+			</div>
+		</div>
+
+		
+	</div>
+	
+</form>
+
+<!-- Ajusta o formulário -->
+<script>
+	
+	// Seleciona primeira aba
+	$(".nav-tabs-form a:first").tab("show");
+	
+	// Define as máscaras do formulário
+	setTimeout( function() {
+		$('*[name="data[rg]"]').inputmask("999.999.9999");
+		$('*[name="data[cpf]"]').inputmask("999.999.999-99");
+		$('*[name="data[telefone]"]').inputmask("(99) 99999-9999");
+		$('*[name="data[tel_empresa]"]').inputmask("(99) 99999-9999");
+	}, 500);
+
+	// Cria o evento para verificar o cpf
+	$('*[name="data[cpf]"]').on('blur', function(event) {
+		var value = event.target.value;
+		var id = $('input:hidden[name="data[id]"]').val();
+		if (value) {
+			SiMCE.ajaxRequest(
+				"POST",
+				SiMCE.moduleURL + "verifyCPF/", 
+				{ id: id, cpf: value },
+				function( data, textStatus, jqXHR ) {
+					if (data.content !== false) {
+
+						bootbox.confirm("Foi encontrado o interlocutor '" + data.content.nome + "' com o CPF informado. Deseja carregar as suas informações cadastrais?", function(result) {
+
+							if (result === true) {
+
+								// Carrega o formulário do alvo indicado
+								$("#app-modal").modal("hide");
+								setTimeout( function() {
+									SiMCE.functions.showForm( data.content.id, 1 );
+								}, 1000 );
+
+							}
+						});
+					}		
+				}
+			);
+		}
+	});
+
+	
+</script>
+
+{% endblock %}

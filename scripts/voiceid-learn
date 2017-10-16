@@ -1,0 +1,35 @@
+#!/usr/bin/python
+#
+# SiMCE VoiceID Learn
+# 
+# Script que vai armazenar no banco de dados de voz o alvo informado
+# 
+# @author Junior Cunha <juniorcunha@dad.eng.br>
+# @version 1.0
+# @copyright (c) 2014, dad Engenharia
+#
+
+from voiceid.sr import Voiceid, utils
+from voiceid.db import GMMVoiceDB
+from datetime import datetime
+import sys
+
+# Obtem as variaveis de entrada
+db_path      = sys.argv[1]
+audio_file   = sys.argv[2]
+cluster_name = sys.argv[3]
+
+# Inicializa o banco de voz
+db = GMMVoiceDB(db_path)
+
+# Processa o audio informado
+v = Voiceid(db, audio_file, True)
+v.extract_speakers(False,True)
+
+# Verifica os clusters
+for c in v.get_clusters():
+	cluster = v.get_cluster(c)
+	cluster.set_speaker( cluster_name )
+
+# Atualiza o banco
+v.update_db();

@@ -1,0 +1,23 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;; This is the configuration file for the Khomp ;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;; channel version 4.0 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+[channels]
+context-digital      = simce-call
+context-pr           = simce-call
+context-gsm-call     = simce-gsm-call
+context-gsm-call-alt = simce-gsm-call
+context-gsm-sms      = simce-sms
+context-gsm-wait     = simce-gsm-wait
+drop-collect-call    = yes
+
+[groups]
+
+[cadences]
+
+[fxs-branches]
+
+[fxs-hotlines]
+
+[fxs-options]

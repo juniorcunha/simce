@@ -1,0 +1,112 @@
+{% import  'Core/Views/components.twig.html' as ui %}
+
+<!-- Seleciona o administrador -->
+<div class="form-group">
+	<label class="col-sm-1 control-label" style="margin-left: 20px;">Administrador: </label>
+	<div class="col-sm-3 col-sm-offset-1" style="margin-left: 75px;">
+		<select class="form-control" name="data[admin]">
+			<option value='0' selected>-- Selecione o administrador --</option>
+			{% for obj in usuarios %}
+				{% if obj.unidades_id is null %}
+					<option value='{{ obj.id }}'>{{ obj.nome }}</option>
+				{% endif %}
+				{% if obj.unidades_id == id %}
+					<option value='{{ obj.id }}' selected>{{ obj.nome }}</option>
+				{% endif %}
+			{% endfor %}
+		</select>
+	</div>
+</div>
+
+<!-- Recursos de Interceptação -->
+<div class="form-group">
+	<label class="col-sm-2 control-label" style="margin-left: 10px;">Recursos de Interceptação:</label>
+</div>
+
+<div class="form-group">
+	
+	<div class="panel-group" id="accordion">
+		
+		<!-- Recursos de Áudio -->
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h4 class="panel-title">
+				  <a data-toggle="collapse" data-parent="#accordion" href="#audio">
+					<span class="glyphicon glyphicon-phone-alt"></span>&nbsp;&nbsp;Áudio 
+				  </a>
+				</h4>
+			</div>
+			<div id="audio" class="panel-collapse collapse in">
+				<div class="panel-body" style="padding: 25px;">
+					<select class="form-control" name="data[audio][]" multiple>
+						{% for obj in recursos %}
+							{% if obj.tipo == 'A' %}
+								{% if obj.unidades_id is null %}
+									<option value="{{ obj.id }}">{{ obj.nome }}</option>
+								{% endif %}
+								{% if obj.unidades_id == id %}
+									<option value="{{ obj.id }}" selected>{{ obj.nome }}</option>
+								{% endif %}
+							{% endif %}
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Recursos de GSM -->
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h4 class="panel-title">
+				  <a data-toggle="collapse" data-parent="#accordion" href="#gsm">
+					<span class="glyphicon glyphicon-phone"></span>&nbsp;&nbsp;SMS 
+				  </a>
+				</h4>
+			</div>
+			<div id="gsm" class="panel-collapse collapse">
+				<div class="panel-body" style="padding: 25px;">
+					<select class="form-control" name="data[gsm][]" multiple>
+						{% for obj in recursos %}
+							{% if obj.tipo == 'G' %}
+								{% if obj.unidades_id is null %}
+									<option value="{{ obj.id }}">{{ obj.nome }}</option>
+								{% endif %}
+								{% if obj.unidades_id == id %}
+									<option value="{{ obj.id }}" selected>{{ obj.nome }}</option>
+								{% endif %}
+							{% endif %}
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Recursos de Dados -->
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h4 class="panel-title">
+				  <a data-toggle="collapse" data-parent="#accordion" href="#dados">
+					<span class="glyphicon glyphicon-open"></span>&nbsp;&nbsp;Dados 
+				  </a>
+				</h4>
+			</div>
+			<div id="dados" class="panel-collapse collapse">
+				<div class="panel-body" style="padding: 25px;">
+					<select class="form-control" name="data[dados][]" multiple>
+						{% for obj in recursos %}
+							{% if obj.tipo == 'D' %}
+								{% if obj.unidades_id is null %}
+									<option value="{{ obj.id }}">{{ obj.nome }}</option>
+								{% endif %}
+								{% if obj.unidades_id == id %}
+									<option value="{{ obj.id }}" selected>{{ obj.nome }}</option>
+								{% endif %}
+							{% endif %}
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+		</div>
+	
+	</div>
+</div>

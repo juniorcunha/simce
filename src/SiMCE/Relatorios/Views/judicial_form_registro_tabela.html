@@ -1,0 +1,101 @@
+{% set table_style = 'font-family: verdana,arial,sans-serif; font-size:11px; color:#333333; border-width: 1px; border-color: #666666; border-collapse: collapse;' %}
+{% set th_style = 'border-width: 1px; padding: 8px; border-style: solid; border-color: #666666; background-color: #dedede;' %}
+{% set td_style = 'border-width: 1px; padding: 8px; border-style: solid; border-color: #666666; background-color: #ffffff;' %}
+
+<center>
+	<table style='width: 90%;' cellpadding="0" cellspacing="0" border="0" style="{{ table_style }}">
+		<tr>
+			<td style="{{ th_style }}">ID</td>
+			<td style="{{ th_style }}">Tipo</td>
+			<td style="{{ th_style }}">Data/Hora</td>
+			<td style="{{ th_style }}">Estado</td>
+			<td style="{{ th_style }}">Alvo</td>
+			<td style="{{ th_style }}">Contatos</td>
+			<td style="{{ th_style }}">Identificador</td>
+			<td style="{{ th_style }}">Tamanho</td>
+		</tr>
+		{%for row in rows %}
+			<tr>
+				<td style="{{ td_style }}">{{ row.id }}</td>
+				<td style="{{ td_style }}">
+					<center>
+					{% if row.tipo_orig == 'A' %}
+						<img src='/simce/assets/img/famfamfam/music.png'>
+						<tcpdf method="Annotation" params="{{ row.tcpdf_params|raw }}" />
+					{% elseif row.tipo_orig == 'G' %}
+						<img src='/simce/assets/img/famfamfam/email.png'>
+					{% else %}
+						<img src='/simce/assets/img/famfamfam/folder_brick.png'>
+					{% endif %}
+					</center>
+				</td>
+				<td style="{{ td_style }}">{{ row.data }}</td>
+				<td style="{{ td_style }}">
+					<table border='0'>
+						<tr>
+							<td>
+								{# Prioridade #}
+								{% if row.status matches '{cus-flag-red}' %}
+									<img src='/simce/assets/img/famfamfam/flag_red.png'>
+								{% elseif row.status matches '{cus-flag-yellow}' %}
+									<img src='/simce/assets/img/famfamfam/flag_yellow.png'>
+								{% elseif row.status matches '{cus-flag-green}' %}
+									<img src='/simce/assets/img/famfamfam/flag_green.png'>
+								{% else %}
+									<img src='/simce/assets/img/famfamfam/flag_blue.png'>
+								{% endif %}
+							</td>
+							<td>
+								{# Status #}
+								{% if row.status matches '{cus-table-go}' %}
+									<img src='/simce/assets/img/famfamfam/table_go.png'>
+								{% elseif row.status matches '{cus-pencil-go}' %}
+									<img src='/simce/assets/img/famfamfam/pencil_go.png'>
+								{% else %}
+									<img src='/simce/assets/img/famfamfam/new.png'>
+								{% endif %}
+							</td>
+							<td>
+								{# Timeline #}
+								{% if row.status matches '{cus-timeline-marker}' %}
+									<img src='/simce/assets/img/famfamfam/timeline_marker.png'>
+								{% endif %}
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td style="{{ td_style }}">{{ row.alvo }}</td>
+				<td style="{{ td_style }}">{{ row.contatos }}</td>
+				<td style="{{ td_style }}">{{ row.identificador }}</td>
+				<td style="{{ td_style }}">{{ row.tamanho }}</td>
+			</tr>
+			{% if filter.transcricao == 1 %}
+				<tr>
+					<td style="{{ td_style }}" colspan="2"><b>Transcrição:</b></td>
+					<td style="{{ td_style }}" colspan="6">
+						{% for seg in row.segmentos %}
+							{% if seg.voiceid.contatos_id is empty %}
+								({{seg.inicio}}-{{seg.final}}) <b>Desconhecido</b>: <i>{{seg.transcricao}}</i><br>
+							{% else %}
+								({{seg.inicio}}-{{seg.final}}) <b>{{seg.voiceid.contatos_id.nome}}</b>: <i>{{seg.transcricao}}</i><br>
+							{% endif %}
+						{% endfor %}
+					</td>
+				</tr>
+			{% endif %}
+			{% if filter.relato == 1 %}
+				<tr>
+					<td style="{{ td_style }}" colspan="2"><b>Breve Relato:</b></td>
+					<td style="{{ td_style }}" colspan="6">{{ row.relato|raw }}</td>
+				</tr>
+			{% endif %}
+			{% if filter.analise == 1 %}
+				<tr>
+					<td style="{{ td_style }}" colspan="2"><b>Análise:</b></td>
+					<td style="{{ td_style }}" colspan="6">{{ row.observacoes|raw }}</td>
+				</tr>
+			{% endif %}
+		{% endfor %}
+	</table>
+</center>
+<p></p>

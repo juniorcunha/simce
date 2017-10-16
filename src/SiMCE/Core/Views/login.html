@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>..:: SiMCE ::..</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<!-- CSS -->
+		<link href="/simce/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link href="/simce/assets/css/hacks.css" rel="stylesheet">
+		
+		<!-- jQuery -->
+		<script src="/simce/libs/jquery/jquery.js"></script>
+		
+		<!-- Bootstrap -->
+		<script src="/simce/libs/bootstrap/js/bootstrap.min.js"></script>
+		<script src="/simce/libs/bootstrap/js/bootstrap-growl.min.js"></script>
+		
+		<!-- SiMCE -->
+		<link href="/simce/assets/css/simce.css" rel="stylesheet">
+		<script src="/simce/assets/js/simce.js"></script>
+		<script src="/simce/assets/js/login.js"></script>
+		
+	</head>
+	
+	<body class="bg-login">
+		
+		<div class="container">
+
+			<div class="form-well well">
+				<form id="form-login" class="form-signin" role="form" onsubmit="return SiMCE.login.submit();">
+					<!-- <center><h2 class="form-signin-heading">:: SiMCE ::</h2></center> -->
+					<center><img src='/simce/assets/img/simce-login.png' style='margin-left: -25px; margin-bottom: 20px;'></center>
+					<input name="data[login]" type="text" class="form-control" placeholder="Login" value="{% if cookie %}{{ cookie.login }}{% endif %}" required autofocus>
+					<input name="data[password]" type="password" class="form-control" value="{% if cookie %}{{ cookie.password }}{% endif %}" placeholder="Senha" required>
+					<label class="checkbox">
+					  <input name="data[remember]" type="checkbox" value="1" {% if cookie %}{% if cookie.remember %}checked{% endif %}{% endif %}> Lembrar dados
+					</label>
+					<button class="btn btn-lg btn-primary btn-block" type="submit">Entrar</button>
+				</form>
+			</div>				
+
+		</div> <!-- /container -->
+
+		<div id="loader" style="width: 200px; position: absolute; bottom: 150px; left: 50%; margin-left: -100px; display: none;"><center><img src="/simce/assets/img/loader.gif"> Verificando...</center></div>
+		<div style="width: 200px; position: absolute; bottom: 20px; left: 50%; margin-left: -100px;"><center>Copyright &copy; 2013 - Junior Cunha. Todos os direitos reservados.</center></div>
+		
+	</body>
+	
+</html>

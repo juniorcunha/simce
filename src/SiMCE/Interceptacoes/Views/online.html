@@ -1,0 +1,115 @@
+{% import  'Core/Views/components.twig.html' as ui %}
+
+{% if alvos|length > 0 %}
+
+	{% if mode == 1 %}
+
+		{% for obj in alvos %}
+			<div id={{ obj.id }} class="panel panel-default" style="position: relative; float: left; margin-right: 20px;">
+				<div class="panel-heading"><b>{{ obj.nome }}</b></div>
+				<div class="panel-body">
+					{% for aloc in obj.alocacoes %}
+						<table border='0' style='position: relative; float: left; margin-right: 20px; width: 180px;'>
+							<tr>
+								{% if aloc.recurso_nome starts with 'SAF' %}
+								<td colspan="2">
+									<center><img src='/simce/assets/img/phone_{{aloc.recurso_status}}.png' height="96" width="96" style="cursor:pointer;" alt="Clique para ouvir" title="Clique para ouvir" onclick="SiMCE.functions.showOnlinePlayer( this, {{ aloc.id }}, '{{ obj.nome }} - {{ aloc.recurso_nome }}' );"></center>
+								</td>	
+								{% endif %}
+								{% if aloc.recurso_nome starts with 'SAC' %}
+								<td colspan="2">
+									<center><img src='/simce/assets/img/mobile_{{aloc.recurso_status}}.png' height="96" width="96" style="cursor:pointer;" alt="Clique para ouvir" title="Clique para ouvir" onclick="SiMCE.functions.showOnlinePlayer( this, {{ aloc.id }}, '{{ obj.nome }} - {{ aloc.recurso_nome }}' );"></center>
+								</td>	
+								{% endif %}
+								{% if aloc.recurso_nome starts with 'SG' %}
+								<td colspan="2">
+									<center><img src='/simce/assets/img/sms_{{aloc.recurso_status}}.png' height="96" width="96"></center>
+								</td>	
+								{% endif %}
+								{% if aloc.recurso_nome starts with 'SD' %}
+								<td colspan="2">
+									<center><img src='/simce/assets/img/data_{{aloc.recurso_status}}.png' height="96" width="96"></center>
+								</td>	
+								{% endif %}
+							</tr>
+							<tr>
+								<td><b>Início:</b></td>
+								<td align='right'>{{ aloc.inicio }}</td>
+							</tr>
+							<tr>
+								<td><b>Fim:</b></td>
+								<td align='right'>{{ aloc.fim }}</td>
+							</tr>
+							<tr>
+								<td><b>Identificação:</b></td>
+								<td align='right'>{{ aloc.identificacao }}</td>
+							</tr>
+							<tr>
+								<td><b>Ofício:</b></td>
+								<td align='right'>{{ aloc.oficio }}</td>
+							</tr>
+						</table>
+					{% endfor %}
+				</div>
+			</div>
+		{% endfor %}
+		
+	{% else %}
+	
+		{% for obj in alvos %}
+			<div id={{obj.nome}} class="panel panel-default">
+				<div class="panel-heading"><b>{{ obj.nome }}</b></div>
+				<div class="panel-body">
+					<table class="table table-striped table-condensed">
+						<tr>
+							<td><b>Início</b></td>
+							<td><b>Fim</b></td>
+							<td><b>Identificação</b></td>
+							<td><b>Ofício</b></td>
+							<td><b>Status</b></td>
+						</tr>
+						{% for aloc in obj.alocacoes %}
+						<tr>
+							<td>{{ aloc.inicio }}</td>
+							<td>{{ aloc.fim }}</td>
+							<td>{{ aloc.identificacao }}</td>
+							<td>{{ aloc.oficio }}</td>
+							{% if aloc.recurso_nome starts with 'SAF' %}
+							<td>
+								<img src='/simce/assets/img/phone_{{aloc.recurso_status}}.png' style="height: 24px; cursor:pointer;" alt="Clique para ouvir" title="Clique para ouvir" onclick="SiMCE.functions.showOnlinePlayer( this, {{ aloc.id }}, '{{ obj.nome }} - {{ aloc.recurso_nome }}' );">
+							</td>	
+							{% endif %}
+							{% if aloc.recurso_nome starts with 'SAC' %}
+							<td>
+								<img src='/simce/assets/img/mobile_{{aloc.recurso_status}}.png' style="height: 24px; cursor:pointer;" alt="Clique para ouvir" title="Clique para ouvir" onclick="SiMCE.functions.showOnlinePlayer( this, {{ aloc.id }}, '{{ obj.nome }} - {{ aloc.recurso_nome }}' );">
+							</td>	
+							{% endif %}
+							{% if aloc.recurso_nome starts with 'SG' %}
+							<td>
+								<img src='/simce/assets/img/sms_{{aloc.recurso_status}}.png' style="height: 24px;">
+							</td>	
+							{% endif %}
+							{% if aloc.recurso_nome starts with 'SD' %}
+							<td>
+								<img src='/simce/assets/img/data_{{aloc.recurso_status}}.png' style="height: 24px;">
+							</td>	
+							{% endif %}
+						</tr>
+						{% endfor %}
+					</table>
+				</div>
+			</div>
+		{% endfor %}
+	
+	{% endif %}
+{% else %}
+	<center><b> Nenhuma interceptação ativa no momento. </b></center>
+{% endif %}
+	<script>
+	$(document).ready(function(){
+		for(var i = 0; i < selectedOnline.length; i++){
+                        document.getElementById(selectedOnline[i]).style.display = "none";
+		};
+	});
+	</script>
+

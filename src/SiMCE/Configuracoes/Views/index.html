@@ -1,0 +1,246 @@
+{% extends 'Core/Views/modules.twig.html' %}
+{% import  'Core/Views/components.twig.html' as ui %}
+
+{% block title %}Configurações{% endblock %}
+{% block description %}Define o funcionamento geral do sistema{% endblock %}
+
+{% block content %}
+
+	<button type="button" class="btn btn-default" onclick="SiMCE.functions.submit();"><span class="cus-disk"></span> Salvar</button>
+	<br><br>
+	
+	<form id="form-config" class="form-horizontal" role="form">
+		<input name="data[id]" type="hidden" value="{{ app.user.getUnidade() }}">
+
+		<!-- Abas do Formulário -->
+		<ul class="nav nav-tabs nav-tabs-form">
+			<li><a href="#form-general" data-toggle="tab"><span class="cus-page-white-text-width"></span> Geral</a></li>
+			<li><a href="#form-notification" data-toggle="tab"><span class="cus-email-go"></span> Notificações</a></li>
+			<li><a href="#form-reports" data-toggle="tab"><span class="cus-report"></span> Relatórios</a></li>
+		</ul>
+
+		<!-- Conteúdo das Abas -->
+		<div class="tab-content">
+
+			<!-- Geral -->
+			<div class="tab-pane active" id="form-general">
+				<br>
+				
+				<!-- Prioridade -->
+				<div class="form-group">
+					<label class="col-sm-4 control-label">Prioridade dos novos registros:</label>
+					<div class="col-sm-8">
+						<div class="radio-inline">
+							<input type="radio" name="data[classificacao]" value="0" {% if data.classificacao == 0 %}checked{% endif %}>
+							<span class="cus-flag-blue"></span> Nenhuma
+						</div>
+						<div class="radio-inline">
+							<input type="radio" name="data[classificacao]" value="1" {% if data.classificacao == 1 %}checked{% endif %}>
+							<span class="cus-flag-green"></span> Baixa 
+						</div>
+						<div class="radio-inline">
+							<input type="radio" name="data[classificacao]" value="2" {% if data.classificacao == 2 %}checked{% endif %}>
+							<span class="cus-flag-yellow"></span> Média 
+						</div>
+						<div class="radio-inline">
+							<input type="radio" name="data[classificacao]" value="3" {% if data.classificacao == 3 %}checked{% endif %}>
+							<span class="cus-flag-red"></span> Alta 
+						</div>
+					</div>
+				</div>
+				
+				<!-- Cronologia de Eventos -->
+				<div class="form-group">
+					<label class="col-sm-4 control-label">Incluir novos registros na Cronologia de Eventos:</label>
+					<div class="col-sm-8">
+						<div class="radio-inline">
+							<input type="radio" name="data[timeline]" value="0" {% if data.timeline == 0 %}checked{% endif %}> Não
+						</div>
+						<div class="radio-inline">
+							<input type="radio" name="data[timeline]" value="1" {% if data.timeline == 1 %}checked{% endif %}> Sim
+						</div>
+					</div>
+				</div>
+
+			</div>
+			
+			<!-- Notificações -->
+			<div class="tab-pane active" id="form-notification">
+				<br>
+				
+				<!-- Resumo diário -->
+				<div class="form-group">
+					<label class="col-sm-4 control-label">Enviar resumo diário das operações:</label>
+					<div class="col-sm-8">
+						<div class="radio-inline">
+							<input type="radio" name="data[notificar_resumo]" value="0" {% if data.notificar_resumo == 0 %}checked{% endif %}> Não
+						</div>
+						<div class="radio-inline">
+							<input type="radio" name="data[notificar_resumo]" value="1" {% if data.notificar_resumo == 1 %}checked{% endif %}> Sim
+						</div>
+					</div>
+				</div>
+				
+				<!-- Notificar a ocorrência de novos registros -->
+				<div class="form-group">
+					<label class="col-sm-4 control-label">Notificar a ocorrência de novos registros:</label>
+					<div class="col-sm-8">
+						<div class="radio-inline">
+							<input type="radio" name="data[notificar_registros]" value="0" {% if data.notificar_registros == 0 %}checked{% endif %}> Não
+						</div>
+						<div class="radio-inline">
+							<input type="radio" name="data[notificar_registros]" value="1" {% if data.notificar_registros == 1 %}checked{% endif %}> Sim
+						</div>
+					</div>
+				</div>
+				
+				<!-- Falhas no Fluxo E1 -->
+				<div class="form-group">
+					<label class="col-sm-4 control-label">Notificar falhas no fluxo E1:</label>
+					<div class="col-sm-8">
+						<div class="radio-inline">
+							<input type="radio" name="data[notificar_erro_e1]" value="0" {% if data.notificar_erro_e1 == 0 %}checked{% endif %}> Não
+						</div>
+						<div class="radio-inline">
+							<input type="radio" name="data[notificar_erro_e1]" value="1" {% if data.notificar_erro_e1 == 1 %}checked{% endif %}> Sim
+						</div>
+					</div>
+				</div>
+				
+				<!-- Falhas na comunicação com a Internet -->
+				<div class="form-group">
+					<label class="col-sm-4 control-label">Notificar falhas de conexão com a Internet:</label>
+					<div class="col-sm-8">
+						<div class="radio-inline">
+							<input type="radio" name="data[notificar_erro_internet]" value="0" {% if data.notificar_erro_internet == 0 %}checked{% endif %}> Não
+						</div>
+						<div class="radio-inline">
+							<input type="radio" name="data[notificar_erro_internet]" value="1" {% if data.notificar_erro_internet == 1 %}checked{% endif %}> Sim
+						</div>
+					</div>
+				</div>
+				
+				<!-- Falhas de sinal de celular -->
+				<div class="form-group">
+					<label class="col-sm-4 control-label">Notificar falhas de sinal GSM:</label>
+					<div class="col-sm-8">
+						<div class="radio-inline">
+							<input type="radio" name="data[notificar_erro_gsm]" value="0" {% if data.notificar_erro_gsm == 0 %}checked{% endif %}> Não
+						</div>
+						<div class="radio-inline">
+							<input type="radio" name="data[notificar_erro_gsm]" value="1" {% if data.notificar_erro_gsm == 1 %}checked{% endif %}> Sim
+						</div>
+					</div>
+				</div>
+				
+				<!-- Alta carga no servidor -->
+				<div class="form-group">
+					<label class="col-sm-4 control-label">Notificar alta carga no servidor SiMCE&reg;:</label>
+					<div class="col-sm-8">
+						<div class="radio-inline">
+							<input type="radio" name="data[notificar_erro_infra]" value="0" {% if data.notificar_erro_infra == 0 %}checked{% endif %}> Não
+						</div>
+						<div class="radio-inline">
+							<input type="radio" name="data[notificar_erro_infra]" value="1" {% if data.notificar_erro_infra == 1 %}checked{% endif %}> Sim
+						</div>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-sm-6 col-sm-offset-2 control-label"><small>* As notificações serão enviadas para o e-mail configurado para cada usuário.</small></label>
+				</div>
+				
+			</div>
+
+			<!-- Relatórios -->
+			<div class="tab-pane active" id="form-reports">
+				<br>
+			
+				<!-- Cabeçalho Padrão -->
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Cabeçalho Padrão:</label>
+					<div class="col-sm-10">
+						<textarea name="data[relatorio_cabecalho]" class="data-cabecalho">{{ data.relatorio_cabecalho }}</textarea>
+					</div>
+				</div>
+				
+				<!-- Rodapé Padrão -->
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Rodapé Padrão:</label>
+					<div class="col-sm-10">
+						<textarea name="data[relatorio_rodape]" class="data-rodape">{{ data.relatorio_rodape }}</textarea>
+					</div>
+				</div>
+				
+				<!-- Inlcuir nome do usuário -->
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Incluir nome do usuário:</label>
+					<div class="col-sm-8">
+						<div class="radio-inline">
+							<input type="radio" name="data[relatorio_usuario]" value="0" {% if data.relatorio_usuario == 0 %}checked{% endif %}> Não
+						</div>
+						<div class="radio-inline">
+							<input type="radio" name="data[relatorio_usuario]" value="1" {% if data.relatorio_usuario == 1 %}checked{% endif %}> Sim
+						</div>
+					</div>
+				</div>
+				
+			</div>
+				
+		</div>
+
+	</form>
+	
+	<!-- Ajusta o formulário -->
+	<script>
+
+		// Seleciona primeira aba
+		$(".nav-tabs-form a:first").tab("show");
+
+		// Cabeçalho
+		tinymce.init({
+			selector:   ".data-cabecalho",
+			plugins: [
+					"advlist autolink lists link image charmap print preview anchor",
+					"searchreplace visualblocks code fullscreen",
+					"insertdatetime media table paste textcolor"
+				],
+			toolbar:    "preview fullscreen | undo redo | styleselect | bold italic forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table",
+			statusbar:  false,
+			menubar:    false,
+			browser_spellcheck : true,
+			paste_data_images: true,
+			menu : {
+				edit   : {title : 'Edit'  , items : 'undo redo | cut copy paste pastetext | selectall | searchreplace'},
+				insert : {title : 'Insert', items : 'simcerecord simcetarget'},
+				format : {title : 'Format', items : 'bold italic underline strikethrough superscript subscript | formats | removeformat'},
+				table  : {title : 'Table' , items : 'inserttable tableprops deletetable | cell row column'}
+			},
+			extended_valid_elements: 'i[class|alt|title]'
+		});
+		
+		// Rodapé
+		tinymce.init({
+			selector:   ".data-rodape",
+			plugins: [
+					"advlist autolink lists link image charmap print preview anchor",
+					"searchreplace visualblocks code fullscreen",
+					"insertdatetime media table paste textcolor"
+				],
+			toolbar:    "preview fullscreen | undo redo | styleselect | bold italic forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table",
+			statusbar:  false,
+			menubar:    false,
+			browser_spellcheck : true,
+			paste_data_images: true,
+			menu : {
+				edit   : {title : 'Edit'  , items : 'undo redo | cut copy paste pastetext | selectall | searchreplace'},
+				insert : {title : 'Insert', items : 'simcerecord simcetarget'},
+				format : {title : 'Format', items : 'bold italic underline strikethrough superscript subscript | formats | removeformat'},
+				table  : {title : 'Table' , items : 'inserttable tableprops deletetable | cell row column'}
+			},
+			extended_valid_elements: 'i[class|alt|title]'
+		});
+
+	</script>
+	
+{% endblock %}

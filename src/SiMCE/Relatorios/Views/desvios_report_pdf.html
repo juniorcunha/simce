@@ -1,0 +1,43 @@
+{% import  'Core/Views/components.twig.html' as ui %}
+
+{% set table_style = 'font-family: verdana,arial,sans-serif; font-size:11px; color:#333333; border-width: 1px; border-color: #666666; border-collapse: collapse;' %}
+{% set th_style = 'border-width: 1px; padding: 8px; border-style: solid; border-color: #666666; background-color: #dedede;' %}
+{% set td_style = 'border-width: 1px; padding: 8px; border-style: solid; border-color: #666666; background-color: #ffffff;' %}
+
+{% set title = 'font-family: verdana,arial,sans-serif; font-size:11px; color:#333333;' %}
+<table border="0" style="{{ title }}">
+	<tr><td align="center"><h3>Relatório de Desvios</h3></td></tr>
+</table>
+<br>
+<br>
+<table cellpadding="0" cellspacing="0" border="0" style="{{ table_style }}">
+	<tr>
+		<th style="{{ th_style }}">Alvo</th>
+		<th style="{{ th_style }}">Responsáveis</th>
+		<th style="{{ th_style }}">Número Desviado</th>
+		<th style="{{ th_style }}">Recurso</th>
+		<th style="{{ th_style }}">Início</th>
+		<th style="{{ th_style }}">Fim</th>
+		<th style="{{ th_style }}">Duração</th>
+		<th style="{{ th_style }}">ID</th>
+	</tr>
+	{% for row in rows %}
+		<tr>
+			<td style="{{ td_style }}">{{ row.alvo }}</td>
+			<td style="{{ td_style }}">{{ row.responsaveis }}</td>
+			<td style="{{ td_style }}">{{ row.num_desvio }}</td>
+			<td style="{{ td_style }}">{{ row.recurso }}</td>
+			<td style="{{ td_style }}">{{ row.inicio }}</td>
+			<td style="{{ td_style }}">{{ row.fim }}</td>
+			<td style="{{ td_style }}">{{ row.duracao }}</td>
+			<td style="{{ td_style }}">{{ row.id }}</td>
+		</tr>
+	{% else %}
+		<tr>
+			<td style="{{ td_style }}" colspan="8"><center>Nenhum desvio no período</center></td>
+		</tr>
+	{% endfor %}
+</table>
+
+<br>
+<br>

@@ -1,0 +1,52 @@
+{% extends 'Core/Views/modal_form.twig.html' %}
+{% import  'Core/Views/components.twig.html' as ui %}
+
+{% block title %}Adicionar um Elemento{% endblock %}
+
+{% block content %}
+
+<form id="form-timeline" class="form-horizontal" role="form">
+
+	<!-- Nome -->
+	<div class="form-group">
+		<label class="col-sm-1 control-label">Nome:</label>
+		<div class="col-sm-10 col-sm-offset-1">
+			<input name="data[nome]" type="text" class="form-control" value="">
+		</div>
+	</div>
+	
+	<!-- Data -->
+	<div class="form-group">
+		<label class="col-sm-1 control-label">Data:</label>
+		<div class="col-sm-10 col-sm-offset-1">
+			{{ ui.form_date_picker( "data[data]", 'now'|date('d/m/Y') ) }}
+		</div>
+	</div>
+	
+	<!-- Descrição -->
+	<div class="form-group">
+		<label class="col-sm-1 control-label">Descrição:</label>
+		<div class="col-sm-10 col-sm-offset-1">
+			<textarea name="data[descricao]" class="data-descricao"></textarea>
+		</div>
+	</div>
+	
+	<!-- Arquivo -->
+	<div class="form-group">
+		<label class="col-sm-1 control-label">Arquivo:</label>
+		<div class="col-sm-10 col-sm-offset-1">
+			<input type="file" onchange="SiMCE.getFileContent(event, 'upload-file');">
+			<input name="data[arquivo]" type="hidden" class="upload-file" value="">
+		</div>
+	</div>
+	
+</form>
+
+<script>
+
+	// Editor para descrição
+	tinymce.init({ selector: ".data-descricao", plugins: 'textcolor link',toolbar: 'undo redo | styleselect | bold italic forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link' });
+
+</script>
+
+{% endblock %}

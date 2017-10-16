@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>..:: SiMCE - Rede de Relacionamentos ::..</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<!-- CSS -->
+		<link href="/simce/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link href="/simce/assets/css/hacks.css" rel="stylesheet">
+		<link href="/simce/assets/css/DT_bootstrap.css" rel="stylesheet">
+		<link href="/simce/libs/bootstrap/css/bootstrap-duallistbox.css" rel="stylesheet">
+		<link href="/simce/libs/bootstrap/css/bootstrap-datepicker.css" rel="stylesheet">
+		<link href="/simce/libs/bootstrap/css/bootstrap-select.min.css" rel="stylesheet">
+		<link href="/simce/assets/css/famfamfam.css" rel="stylesheet">
+		<link href="/simce/libs/jquery/themes/default/style.css" rel="stylesheet">
+		<link href="/simce/libs/mediaelement/mediaelementplayer.min.css" rel="stylesheet">
+		<link href="/simce/libs/timeline/css/timeline.css" rel="stylesheet">
+		
+		<!-- jQuery -->
+		<script src="/simce/libs/jquery/jquery.js"></script>
+		<script src="/simce/libs/jquery/jquery.inputmask.min.js"></script>
+		<script src="/simce/libs/jquery/jquery.cookie.js"></script>
+		<script src="/simce/libs/jquery/jstree.min.js"></script>
+		
+		<!-- Bootstrap -->
+		<script src="/simce/libs/bootstrap/js/bootstrap.min.js"></script>
+		<script src="/simce/libs/bootstrap/js/bootstrap-growl.min.js"></script>
+		<script src="/simce/libs/bootstrap/js/bootbox.min.js"></script>
+		<script src="/simce/libs/bootstrap/js/bootstrap-duallistbox.js"></script>
+		<script src="/simce/libs/bootstrap/js/bootstrap-datepicker.js"></script>
+		<script src="/simce/libs/bootstrap/js/bootstrap-select.min.js"></script>
+					
+		<!-- Jit -->
+		<script src="/simce/libs/jit/jit-yc.js"></script>
+		
+		<!-- SiMCE -->
+		<link href="/simce/assets/css/simce.css" rel="stylesheet">
+		<script src="/simce/assets/js/simce.js"></script>
+		
+		<!-- Inclui o módulo de rede -->
+		<script>
+
+			SiMCE.functions = {
+
+				/**
+				 * Cria a estrutura da rede de relacionamentos
+				 * 
+				 * @param int mode
+				 * @returns void
+				 */
+				createNetwork: function() {
+				
+					var data = {{ content|raw }};
+				
+					// Verifica se retornou as informações com sucesso
+					if ( data.success === true ) {
+
+						// Limpa o conteúdo anterior
+						$('#network-embed').empty();
+
+						var rgraph = new $jit.RGraph({  
+							injectInto: 'network-embed',  
+							background: false,//{  
+							//Set Node and Edge styles.  
+							Node: {  
+								color: '#000000'  
+							},  
+							Edge: {  
+							  color:     '#C17878',  
+							  lineWidth: 1.5,
+							},  
+
+							onBeforeCompute: function(node){ 
+
+								$('#network-info').hide();
+								if (!node.data.hasOwnProperty("type"))
+									return;
+
+								// Obtem os nodos filhos
+								var nodes = new Array();
+								$.each( node.adjacencies, function( key, value ) {
+									if ( key != 0 ) {
+										nodes.push( key );
+									}
+								});
+
+								// Carrega os detalhes do Alvo/Interlocutor
+								SiMCE.ajaxRequest(
+									"POST",
+									SiMCE.moduleURL + "details/", 
+									"id=" + node.id + "&type=" + node.data.type + "&nodes=" + nodes.join("|"),
+									function( data, textStatus, jqXHR ) {
+										if ( data.success === true ) {
+											$('#network-info').html( data.content ).show();
+										}
+									}
+								);
+
+
+							},
+							//Add the name of the node in the correponding label  
+							//and a click handler to move the graph.  
+							//This method is called once, on label creation.  
+							onCreateLabel: function(domElement, node){  
+								domElement.innerHTML = '<span>' + node.name + '</span>';
+								domElement.onclick = function(){  
+									rgraph.onClick(node.id, {  
+										onComplete: function() {  
+											//alert("Click onCreateLabel");
+										}
+									});  
+								};  
+							},  
+							//Change some label dom properties.  
+							//This method is called each time a label is plotted.  
+							onPlaceLabel: function(domElement, node){  
+								var style = domElement.style;  
+								style.display = '';  
+								style.cursor = 'pointer';  
+
+								if (node._depth <= 1) {  
+									style.fontSize = "0.8em";  
+									style.color = "#0000";  
+
+								} else if(node._depth == 2){  
+									style.fontSize = "0.7em";  
+									style.color = "#0000";  
+
+								} else {  
+									style.display = 'none';  
+								}  
+
+								var left = parseInt(style.left);  
+								var w = domElement.offsetWidth;  
+								style.left = (left - w / 2) + 'px';  
+							}  
+						});  
+						//load JSON data  
+						rgraph.loadJSON(data.content);  
+						//trigger small animation  
+						rgraph.graph.eachNode(function(n) {  
+						  var pos = n.getPos();  
+						  pos.setc(-200, -200);  
+						});  
+						rgraph.compute('end');  
+						rgraph.fx.animate({  
+						  modes:['polar'],  
+						  duration: 2000  
+						});  
+
+					}
+					
+				}
+				
+			};
+		
+		</script>
+		
+	</head>
+	<body>
+		
+		<br>
+		<div id="network-embed" style="width: 100%; height: 400px;">
+			<br><br><br><br><center><img src="assets/img/loader.gif">Carregando Relacionamentos, Alvos e Interlocutores...</center>
+		</div>
+		
+		<!-- Script de pós inicialilização -->
+		<script>
+			SiMCE.functions.createNetwork();
+		</script>
+
+	</body>
+</html>

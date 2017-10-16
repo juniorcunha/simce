@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>..:: SiMCE ::..</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<!-- CSS -->
+		<link href="libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link href="assets/css/hacks.css" rel="stylesheet">
+		<link href="assets/css/DT_bootstrap.css" rel="stylesheet">
+		<link href="libs/bootstrap/css/bootstrap-duallistbox.css" rel="stylesheet">
+		<link href="libs/bootstrap/css/bootstrap-datepicker.css" rel="stylesheet">
+		<link href="libs/bootstrap/css/bootstrap-select.min.css" rel="stylesheet">
+		<link href="assets/css/famfamfam.css" rel="stylesheet">
+		<link href="libs/jquery/themes/default/style.css" rel="stylesheet">
+		<link href="libs/mediaelement/mediaelementplayer.min.css" rel="stylesheet">
+		<link href="libs/timeline/css/timeline.css" rel="stylesheet">
+		
+		<!-- jQuery -->
+		<script src="libs/jquery/jquery.js"></script>
+		<script src="libs/jquery/jquery.inputmask.min.js"></script>
+		<script src="libs/jquery/jquery.cookie.js"></script>
+		<script src="libs/jquery/jstree.min.js"></script>
+		
+		<!-- Bootstrap -->
+		<script src="libs/bootstrap/js/bootstrap.min.js"></script>
+		<script src="libs/bootstrap/js/bootstrap-growl.min.js"></script>
+		<script src="libs/bootstrap/js/bootbox.min.js"></script>
+		<script src="libs/bootstrap/js/bootstrap-duallistbox.js"></script>
+		<script src="libs/bootstrap/js/bootstrap-datepicker.js"></script>
+		<script src="libs/bootstrap/js/bootstrap-select.min.js"></script>
+		
+		<!-- DataTables -->
+		<script src="libs/DataTables/media/js/jquery.dataTables.min.js"></script>
+		<script src="assets/js/DT_bootstrap.js"></script>
+		
+		<!-- amCharts -->
+		<script src="libs/amcharts/amcharts.js"></script>
+		<script src="libs/amcharts/gauge.js"></script>
+		<script src="libs/amcharts/pie.js"></script>
+		<script src="libs/amcharts/serial.js"></script>
+		
+		<!-- TinyMCE -->
+		<script src="libs/tinymce/tinymce.min.js"></script>
+		<script src="libs/tinymce/jquery.tinymce.min.js"></script>
+		<script src="libs/tinymce/langs/pt_BR.js"></script>
+		
+		<!-- MediaElement -->
+		<script src="libs/mediaelement/mediaelement-and-player.min.js"></script>
+		
+		<!-- TimelineJS -->
+		<script src="libs/timeline/js/timeline-min.js"></script>
+		<script src="libs/timeline/js/locale/pt-br.js"></script>
+		
+		<!-- Jit -->
+		<script src="libs/jit/jit-yc.js"></script>
+		
+		<!-- Highcharts -->
+		<script src="libs/hc/js/highcharts.js"></script>
+		<script src="libs/hc/js/highcharts-3d.js"></script>
+		
+		<!-- SiMCE -->
+		<link href="assets/css/simce.css" rel="stylesheet">
+		<script src="assets/js/simce.js"></script>
+		
+		{% import  'Core/Views/components.twig.html' as ui %}
+		
+	</head>
+	<body>
+		
+		<!-- Barra superior -->
+		<nav class="navbar navbar-default" rouserle="navigation">
+			
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#" style="padding: 0px 0px 0px 10px;"><img src="assets/img/simce-logo.png"></a>
+				<p class="navbar-text" style="position: absolute; margin: 30px 0px 0px 150px; font-size: 11px; cursor: pointer;" alt="Clique para ver o Changelog" title="Clique para ver o Changelog" onclick="SiMCE.showChangeLog();">v{{ app.version }} <i class="cus-new" id="new-version-tag" style="display: none;"></i>&nbsp;</p>
+			</div>
+			
+			<div class="collapse navbar-collapse">
+				
+				{% if not app.user.isSuperAdmin() %}
+					<!-- Combo de seleção das operações -->
+					<form class="navbar-form navbar-left" style="margin-left: 160px;" onsubmit="return SiMCE.findID(event);" role="form">
+						Operação:&nbsp;&nbsp;&nbsp;
+						<div class="form-group">
+							<select class="form-control operacao-select" name="data[operacao]" style="width: 200px;" onchange="SiMCE.reloadEvent();">
+								{% for obj in opList %}
+									<option value="{{ obj.id }}" {% if loop.first %}selected{% endif %}>{{ obj.nome }}</option>
+								{% endfor %}
+							</select>
+						</div>
+						&nbsp;&nbsp;&nbsp;ID:&nbsp;&nbsp;&nbsp;<input name="data[id]" type="text" style="width: 100px;" class="form-control input-sm" value="">
+						<input name="data[alvo]" type="hidden" value="">
+						<input name="data[contato]" type="hidden" value="">
+					</form>
+				{% endif %}
+				
+				<ul class="nav navbar-nav navbar-right">
+					<a id="ajax-loader" class="navbar-brand" href="#" style="padding: 8px 0px 0px 10px; display: none;"><img src="assets/img/loader.gif"></a>
+					<li class="dropdown">
+						<a href="#" data-toggle="dropdown"><span class="cus-user"></span> {{ app.user.get('nome') }}  <span id="notification-number" class="badge"></span><b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="#" onclick="SiMCE.showUserProfile();"><span class="cus-user-edit"></span> Perfil</a></li>
+							<li id="notification-divider" class="divider hidden"><li>
+							<li><a id="notification-calls" href="#"  class="hidden"></a></li>
+						</ul>
+					</li>
+					<li><a href="/simce/manual/index.html" data-toggle="tooltip" title="Manual" target="_blank"><span class="cus-help"></span></a></li>
+					<li style="margin-right: 20px;"><a href="/simce/logout/" data-toggle="tooltip" title="Sair"><span class="cus-door-out"></span></a></li>
+				</ul>
+			</div>
+		</nav>
+		
+		<!-- Módulos e menu lateral -->
+		<div class="container" style="margin-left: 15px; margin-right: 15px;">
+			<div class="row">
+				<div class="col-xg-12">
+					<div class="tabs-left">
+						
+						{#######################}
+						{#                     #}
+						{# Super Administrador #}
+						{#                     #}
+						{#######################}
+						
+						{% if app.user.isSuperAdmin() %}
+							<ul class="nav nav-tabs">
+								<li><a href="#dashboard" data-toggle="tab">
+									<span class="cus-chart-curve"></span> Dashboard
+								</a></li>
+								<li><a href="#und_org" data-toggle="tab">
+									<span class="cus-world"></span> Unidades Organizacionais
+								</a></li>
+								<li><a href="#rec_intr" data-toggle="tab">
+									<span class="cus-plugin-go"></span> Gestão de Recursos
+								</a></li>
+								<li><a href="#usuarios" data-toggle="tab">
+									<span class="cus-user-add"></span> Usuários
+								</a></li>
+								<!-- <li><a href="#relatorios" data-toggle="tab">
+									<span class="cus-report"></span> Relatórios
+								</a></li> -->
+							</ul>
+							<div class="tab-content" style="padding-top: 1px;">
+								<div class="tab-pane fade in" id="dashboard"></div>
+								<div class="tab-pane fade in" id="und_org"></div>
+								<div class="tab-pane fade in" id="rec_intr"></div>
+								<div class="tab-pane fade in" id="usuarios"></div>
+								<div class="tab-pane fade in" id="relatorios"></div>
+							</div>
+						{% endif %}
+						
+						{#######################}
+						{#                     #}
+						{# Administrador       #}
+						{#                     #}
+						{#######################}
+						
+						{% if app.user.isAdmin() %}
+							<ul class="nav nav-tabs">
+								<li><a href="#dashboard" data-toggle="tab">
+									<span class="cus-chart-curve"></span> Dashboard
+								</a></li>
+								<li><a href="#alvos" data-toggle="tab">
+									<span class="cus-group-error"></span> Gestão de Alvos
+								</a></li>
+								<li><a href="#interceptacoes" data-toggle="tab">
+									<span class="cus-table-multiple"></span> Interceptações
+								</a></li>
+								<li><a href="#contatos" data-toggle="tab">
+									<span class="cus-group-link"></span> Interlocutores
+								</a></li>
+								<li><a href="#timeline" data-toggle="tab">
+									<span class="cus-timeline-marker"></span> Cronologia de Eventos
+								</a></li>
+								<!-- <li><a href="#ontologias" data-toggle="tab">
+									<span class="cus-book-addresses"></span> Dicionário de Expressões
+								</a></li> -->
+								<li><a href="#network" data-toggle="tab">
+									<span class="cus-chart-organisation"></span> Rede de Relacionamentos
+								</a></li>
+								<li><a href="#relatorios" data-toggle="tab">
+									<span class="cus-report"></span> Relatórios
+								</a></li>
+								<!-- <li><a href="#backup" data-toggle="tab">
+									<span class="cus-disk-multiple"></span> Backup
+								</a></li> -->
+								<li><hr></li>
+								<li><a href="#alocacoes" data-toggle="tab">
+									<span class="cus-group-go"></span> Recursos de Interceptação
+								</a></li>
+								<li><a href="#operacoes" data-toggle="tab">
+									<span class="cus-cog"></span> Gestão de Operações
+								</a></li>
+								<li><a href="#usuarios" data-toggle="tab">
+									<span class="cus-user-add"></span> Usuários
+								</a></li>
+								<li><a href="#cargos" data-toggle="tab">
+									<span class="cus-table-edit"></span> Cargos e Perfis
+								</a></li>
+								<li><a href="#configuracoes" data-toggle="tab">
+									<span class="cus-application-form"></span> Configurações
+								</a></li>
+							</ul>
+							<div class="tab-content" style="padding-top: 1px;">
+								<div class="tab-pane fade in" id="dashboard"></div>
+								<div class="tab-pane fade in" id="alvos"></div>
+								<div class="tab-pane fade in" id="interceptacoes"></div>
+								<div class="tab-pane fade in" id="contatos"></div>
+								<div class="tab-pane fade in" id="timeline"></div>
+								<!-- <div class="tab-pane fade in" id="ontologias"></div> -->
+								<div class="tab-pane fade in" id="network"></div>
+								<div class="tab-pane fade in" id="relatorios"></div>
+								<div class="tab-pane fade in" id="backup"></div>
+								<div class="tab-pane fade in" id="operacoes"></div>
+								<div class="tab-pane fade in" id="usuarios"></div>
+								<div class="tab-pane fade in" id="alocacoes"></div>
+								<div class="tab-pane fade in" id="cargos"></div>
+								<div class="tab-pane fade in" id="configuracoes"></div>
+							</div>
+						{% endif %}
+						
+						{#######################}
+						{#                     #}
+						{# Operador            #}
+						{#                     #}
+						{#######################}
+						
+						{% if app.user.isOperator() %}
+							<ul class="nav nav-tabs">
+								<li><a href="#dashboard" data-toggle="tab">
+									<span class="cus-chart-curve"></span> Dashboard
+								</a></li>
+								<li><a href="#interceptacoes" data-toggle="tab">
+									<span class="cus-table-multiple"></span> Interceptações
+								</a></li>
+								<li><a href="#contatos" data-toggle="tab">
+									<span class="cus-group-link"></span> Interlocutores
+								</a></li>
+								<li><a href="#timeline" data-toggle="tab">
+									<span class="cus-timeline-marker"></span> Cronologia de Eventos
+								</a></li>
+								<!-- <li><a href="#ontologias" data-toggle="tab">
+									<span class="cus-book-addresses"></span> Dicionário de Expressões
+								</a></li> -->
+								<li><a href="#network" data-toggle="tab">
+									<span class="cus-chart-organisation"></span> Rede de Relacionamentos
+								</a></li>
+								<li><a href="#relatorios" data-toggle="tab">
+									<span class="cus-report"></span> Relatórios
+								</a></li>
+								<!-- <li><a href="#backup" data-toggle="tab">
+									<span class="cus-disk-multiple"></span> Backup
+								</a></li> -->
+							</ul>
+							<div class="tab-content" style="padding-top: 1px;">
+								<div class="tab-pane fade in" id="dashboard"></div>
+								<div class="tab-pane fade in" id="interceptacoes"></div>
+								<div class="tab-pane fade in" id="contatos"></div>
+								<div class="tab-pane fade in" id="timeline"></div>
+								<!-- <div class="tab-pane fade in" id="ontologias"></div> -->
+								<div class="tab-pane fade in" id="network"></div>
+								<div class="tab-pane fade in" id="relatorios"></div>
+								<!-- <div class="tab-pane fade in" id="backup"></div> -->
+							</div>
+						{% endif %}
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Modal -->
+		{{ ui.modal_placeholder("app-modal") }}
+		{{ ui.modal_placeholder("app-upload") }}
+		
+		<!-- Script de pós inicialilização -->
+		<script>
+						
+			// Define o evento de carregamento das abas
+			$(document).on( 'shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
+				if (e.target.href.match("#form") !== null) {
+					e.preventDefault();
+				} else {
+					SiMCE.loadModule( e );
+					e.preventDefault();
+				}
+			});
+			
+			// Seleciona primeira aba
+			$(".nav-tabs a:first").tab("show");
+
+			// Remove banners da amcharts
+			setInterval( function() {
+				$("tspan:contains('amcharts.com')").remove();
+			}, 1000 );
+			
+			// Remove banners da highcharts
+			setInterval( function() {
+				$("text:contains('Highcharts.com')").remove();
+			}, 1000 );
+			
+			// Processa eventos do usuário
+			SiMCE.processUserEvents();
+			
+		</script>
+
+	</body>
+</html>

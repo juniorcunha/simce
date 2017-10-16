@@ -1,0 +1,39 @@
+[mysqld]
+user                           = mysql
+default-storage-engine         = InnoDB
+socket                         = /opt/simce/db/mysql.sock
+pid-file                       = /opt/simce/db/mysql.pid
+key-buffer-size                = 32M
+myisam-recover                 = FORCE,BACKUP
+max-allowed-packet             = 30M
+max-connect-errors             = 1000000
+datadir                        = /opt/simce/db/
+tmp-table-size                 = 32M
+max-heap-table-size            = 32M
+query-cache-type               = 0
+query-cache-size               = 0
+max-connections                = 500
+thread-cache-size              = 50
+open-files-limit               = 65535
+table-definition-cache         = 1024
+table-open-cache               = 2048
+symbolic-links                 = 0
+#
+# INNODB #
+innodb-flush-method            = O_DIRECT
+innodb-log-files-in-group      = 2
+#innodb-log-file-size           = 256M
+innodb-flush-log-at-trx-commit = 2
+innodb-file-per-table          = 1
+innodb-buffer-pool-size        = 6G
+#
+# LOGGING #
+log-error                      = /opt/simce/db/mysql-error.log
+log-queries-not-using-indexes  = 1
+
+[mysqld_safe]
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
+
+[client]
+socket=/opt/simce/db/mysql.sock

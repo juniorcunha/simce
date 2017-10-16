@@ -1,0 +1,84 @@
+{####################################################}
+{#                                                  #}
+{# Combo com os estados brasileiros                 #}
+{#                                                  #}
+{####################################################}
+{% macro form_combo_estados( id, opt ) %}
+	
+	<select name="{{id}}" id="{{id}}" class="form-control input-sm">
+		<option value="0">Escolha o Estado</option>
+		<option value="AC" {% if opt == "AC" %}selected{% endif %}>Acre</option>
+		<option value="AL" {% if opt == "AL" %}selected{% endif %}>Alagoas</option>
+		<option value="AP" {% if opt == "AP" %}selected{% endif %}>Amapá</option>
+		<option value="AM" {% if opt == "AM" %}selected{% endif %}>Amazonas</option>
+		<option value="BA" {% if opt == "BA" %}selected{% endif %}>Bahia</option>
+		<option value="CE" {% if opt == "CE" %}selected{% endif %}>Ceará</option>
+		<option value="DF" {% if opt == "DF" %}selected{% endif %}>Distrito Federal</option>
+		<option value="ES" {% if opt == "ES" %}selected{% endif %}>Espirito Santo</option>
+		<option value="GO" {% if opt == "GO" %}selected{% endif %}>Goiás</option>
+		<option value="MA" {% if opt == "MA" %}selected{% endif %}>Maranhão</option>
+		<option value="MT" {% if opt == "MT" %}selected{% endif %}>Mato Grosso</option>
+		<option value="MS" {% if opt == "MS" %}selected{% endif %}>Mato Grosso do Sul</option>
+		<option value="MG" {% if opt == "MG" %}selected{% endif %}>Minas Gerais</option>
+		<option value="PA" {% if opt == "PA" %}selected{% endif %}>Pará</option>
+		<option value="PB" {% if opt == "PB" %}selected{% endif %}>Paraiba</option>
+		<option value="PR" {% if opt == "PR" %}selected{% endif %}>Paraná</option>
+		<option value="PE" {% if opt == "PE" %}selected{% endif %}>Pernambuco</option>
+		<option value="PI" {% if opt == "PI" %}selected{% endif %}>Piauí</option>
+		<option value="RJ" {% if opt == "RJ" %}selected{% endif %}>Rio de Janeiro</option>
+		<option value="RN" {% if opt == "RN" %}selected{% endif %}>Rio Grande do Norte</option>
+		<option value="RS" {% if opt == "RS" %}selected{% endif %}>Rio Grande do Sul</option>
+		<option value="RO" {% if opt == "RO" %}selected{% endif %}>Rondônia</option>
+		<option value="RR" {% if opt == "RR" %}selected{% endif %}>Roraima</option>
+		<option value="SC" {% if opt == "SC" %}selected{% endif %}>Santa Catarina</option>
+		<option value="SP" {% if opt == "SP" %}selected{% endif %}>São Paulo</option>
+		<option value="SE" {% if opt == "SE" %}selected{% endif %}>Sergipe</option>
+		<option value="TO" {% if opt == "TO" %}selected{% endif %}>Tocantis</option>
+	</select>
+
+{% endmacro %}
+
+{####################################################}
+{#                                                  #}
+{# Adiciona uma div que irá conter uma janela modal #}
+{#                                                  #}
+{####################################################}
+{% macro modal_placeholder( id ) %}
+	<div id="{{ id }}" class="modal fade"></div>
+{% endmacro %}
+
+{####################################################}
+{#                                                  #}
+{# Campo para configurar a data                     #}
+{#                                                  #}
+{####################################################}
+{% macro form_date_picker( id, value, disabled ) %}
+	<input name="{{ id }}" class="form-control" type="text" {% if not disabled %}data-provide="datepicker"{% endif %} data-date-format="dd/mm/yyyy" data-date-language="pt-BR" data-date-autoclose="true" value="{{ value }}"  {% if disabled == 1 %}readonly{% endif %}>
+	{% if not disabled %}
+		<script>
+			setTimeout( function() {
+				$('*[name="{{id}}"]').inputmask("99/99/9999");
+			}, 500);
+		</script>
+	{% endif %}
+{% endmacro %}
+
+{####################################################}
+{#                                                  #}
+{# Campo para configurar a data com inicial     #}
+{#                                                  #}
+{####################################################}
+{% macro form_date_picker_start( id, value, start, end ) %}
+	{% if end %}
+		<input name="{{ id }}" class="form-control" type="text" {% if not disabled %}data-provide="datepicker"{% endif %} data-date-format="dd/mm/yyyy" data-date-language="pt-BR" data-date-autoclose="true" data-date-start-date="{{ start }}" data-date-end-date="{{ end }}" value="{{ value }}"  {% if disabled == 1 %}readonly{% endif %}>
+	{% else %}
+		<input name="{{ id }}" class="form-control" type="text" {% if not disabled %}data-provide="datepicker"{% endif %} data-date-format="dd/mm/yyyy" data-date-language="pt-BR" data-date-autoclose="true" data-date-start-date="{{ start }}" value="{{ value }}"  {% if disabled == 1 %}readonly{% endif %}>
+	{% endif %}
+	{% if not disabled %}
+		<script>
+			setTimeout( function() {
+				$('*[name="{{id}}"]').inputmask("99/99/9999");
+			}, 500);
+		</script>
+	{% endif %}
+{% endmacro %}

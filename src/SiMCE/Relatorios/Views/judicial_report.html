@@ -1,0 +1,93 @@
+{% import  'Core/Views/components.twig.html' as ui %}
+
+
+{% if data.relatorio.id %}
+	<input name="data[id]" type="hidden" value="{{ data.relatorio.id }}">
+{% endif %}
+<div class="form-group">
+	<label class="col-sm-1 control-label">Nome:</label>
+	<div class="col-sm-5">
+		<input name="data[nome]" type="text" class="form-control" value="{% if data.relatorio.nome %}{{ data.relatorio.nome }}{% endif %}">
+	</div>
+</div>
+<textarea name="data[conteudo]" class="data-editor">{% if data.relatorio.conteudo %}{{ data.relatorio.conteudo }}{% endif %}</textarea>
+<br>
+<br>
+
+<div id="loadingReport" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-body">
+				<br><center><img src="assets/img/loader.gif">Gerando relatório. Por favor, aguarde.</center><br>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Ajusta os itens de navegação -->
+<script>
+	
+	// TinyMCE
+	tinymce.init({
+		height:     $( document ).height() - 350,
+		selector:   ".data-editor",
+		plugins: [
+				"advlist autolink lists link image charmap print preview anchor",
+				"searchreplace visualblocks code fullscreen",
+				"insertdatetime media table paste textcolor"
+			],
+		toolbar:    "preview fullscreen | undo redo | styleselect | bold italic forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent",
+		statusbar:  false,
+		menubar:    "edit insert format table",
+		browser_spellcheck : true,
+		paste_data_images: true,
+		menu : {
+			edit   : {title : 'Edit'  , items : 'undo redo | cut copy paste pastetext | selectall | searchreplace'},
+			insert : {title : 'Insert', items : 'simcerecord simcetarget simcenetwork'},
+			format : {title : 'Format', items : 'bold italic underline strikethrough superscript subscript | formats | removeformat'},
+			table  : {title : 'Table' , items : 'inserttable tableprops deletetable | cell row column'}
+		},
+		extended_valid_elements: 'i[class|alt|title],a[href|onclick],tcpdf[method|params]',
+		content_css: '/simce/libs/bootstrap/css/bootstrap.min.css,/simce/assets/css/hacks.css,/simce/assets/css/famfamfam.css',
+		// Menu customizado para importação
+		setup: function( editor ) {
+			
+			// Registro
+			editor.addMenuItem("simcerecord",{
+				text:    "Interceptação",
+				context: "insert",
+				onclick: function() {
+					SiMCE.functions.showRecordForm();
+				}
+			});
+			
+			// Alvo
+			editor.addMenuItem("simcetarget",{
+				text:    "Alvo",
+				context: "insert",
+				onclick: function() {
+					SiMCE.functions.showTargetForm();
+				}
+			});
+			
+			// Rede de Relacionamentos
+			editor.addMenuItem("simcenetwork",{
+				text:    "Rede de Relacionamentos",
+				context: "insert",
+				onclick: function() {
+					SiMCE.functions.addNetwork();
+				}
+			});
+			
+		}
+	});
+	
+	// Botão voltar
+	$(".btn-prev").removeClass("hidden").off().on( 'click', SiMCE.functions.loadMenu );
+	// Botão avançar
+	$(".btn-next").addClass("hidden");
+	// Botão gerar
+	$(".btn-run").addClass("hidden").off().html("<span class='cus-disk'></span> Salvar").removeClass("hidden").on('click', SiMCE.functions.saveJudicialReport );
+	// Botão pdf
+	$(".btn-pdf").removeClass("hidden").on('click', SiMCE.functions.genPDFJudicialReport );
+</script>

@@ -1,0 +1,9 @@
+{
+    "require": {
+        "silex/silex":			"1.*",
+        "twig/twig":			"1.*",
+        "monolog/monolog":		"1.*",
+        "audero/audero-wav-extractor":	"2.0.*",
+        "tecnick.com/tcpdf":            "6.*"
+    }
+}

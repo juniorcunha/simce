@@ -1,0 +1,20 @@
+{% import  'Core/Views/components.twig.html' as ui %}
+
+{% set perm_id = random() %}
+
+<div id="perm-form-{{ perm_id }}" class="form-group">
+	<input type="hidden" name="permissoes[{{ perm_id }}][usuario]" class="perm-form-id" value="{{ obj.id }}">
+	<label class="col-sm-3 control-label">{{ obj.nome }}:</label>
+	<div class="col-sm-4 col-sm-offset-1">
+		<select name="permissoes[{{ perm_id }}][cargo]" class="form-control input-sm">
+			{% for xObj in cargos %}
+				{% if obj.cargo == xObj.id %}
+					<option value="{{ xObj.id }}" selected>{{ xObj.nome }}</option>
+				{% else %}
+					<option value="{{ xObj.id }}">{{ xObj.nome }}</option>
+				{% endif %}
+			{% endfor %}
+		</select>
+	</div>
+	<button type="button" class="btn btn-default btn-sm" onclick="SiMCE.functions.removePermission({{ perm_id }});"><span class="cus-delete"></span> Remover</button>
+</div>

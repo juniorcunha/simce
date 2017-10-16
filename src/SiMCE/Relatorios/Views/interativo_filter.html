@@ -1,0 +1,185 @@
+{% import  'Core/Views/components.twig.html' as ui %}
+
+<input type="hidden" name="data[tipo]" value="interativo">
+<input type="hidden" name="filter[full]" value="1">
+<input type="hidden" name="filter[format]" value="zip">
+
+<!-- Abas -->
+<ul class="nav nav-tabs nav-tabs-form">
+	<li><a href="#form-geral" data-toggle="tab"><span class="cus-table-gear"></span> Opções</a></li>
+	<li><a href="#form-advanced" data-toggle="tab"><span class="cus-plugin-edit"></span> Filtros Avançados</a></li>
+</ul>
+
+<!-- Conteúdo das Abas -->
+<div class="tab-content">
+
+	<!-- Opções -->
+	<div class="tab-pane" id="form-geral">
+
+		<br><br>
+		<!-- Data Inicial -->
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Data Inicial:</label>
+			<div class="col-sm-4">
+				{{ ui.form_date_picker( "filter[data][start]", 'now'|date_modify('-1 month')|date('d/m/Y'), 0 ) }}
+		  </div>
+		</div>
+		<!-- Data Final -->
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Data Final:</label>
+			<div class="col-sm-4">
+				{{ ui.form_date_picker( "filter[data][end]", 'now'|date('d/m/Y'), 0 ) }}
+		  </div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Definir senha para acesso:</label>
+			<div class="col-sm-4">
+				<input name="data[password]" type="password" class="form-control" value="" placeholder="Deixe em branco para não conter senha">
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Converter áudios para mp3:</label>
+			<div class="col-sm-4">
+				<select name="data[mp3]" class="form-control">
+					<option value="0" selected>Não</option>
+					<option value="1">Sim</option>
+				</select>
+			</div>
+		</div>
+	</div>
+
+	<!-- Avançados -->
+	<div class="tab-pane" id="form-advanced">
+
+		<br><br>
+		<!-- Tipo -->
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Tipo:</label>
+			<div class="col-sm-10">
+			<label class="checkbox-inline">
+				<input type="checkbox" name="filter[tipo][]" value="A" checked><span class="cus-music"></span> Áudio
+			</label>
+			<label class="checkbox-inline">
+				<input type="checkbox" name="filter[tipo][]" value="G" checked><span class="cus-email"></span> SMS
+			</label>
+			<label class="checkbox-inline">
+				<input type="checkbox" name="filter[tipo][]" value="D" checked><span class="cus-folder-brick"></span> Dados
+			</label>
+		  </div>
+		</div>
+		<!-- Prioridade -->
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Prioridade:</label>
+			<div class="col-sm-10">
+				<div class="checkbox-inline">
+					<input type="checkbox" name="filter[classificacao][]" value="0" checked>
+					<span class="cus-flag-blue"></span> Nenhuma
+				</div>
+				<div class="checkbox-inline">
+					<input type="checkbox" name="filter[classificacao][]" value="1" checked>
+					<span class="cus-flag-green"></span> Baixa 
+				</div>
+				<div class="checkbox-inline">
+					<input type="checkbox" name="filter[classificacao][]" value="2" checked>
+					<span class="cus-flag-yellow"></span> Média 
+				</div>
+				<div class="checkbox-inline">
+					<input type="checkbox" name="filter[classificacao][]" value="3" checked>
+					<span class="cus-flag-red"></span> Alta 
+				</div>
+			</div>
+		</div>
+		<!-- Situação -->
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Estado:</label>
+			<div class="col-sm-10">
+				<div class="checkbox-inline">
+					<input type="checkbox" name="filter[estado][]" value="0" checked>
+					<span class="cus-new"></span> Nova
+				</div>
+				<div class="checkbox-inline">
+					<input type="checkbox" name="filter[estado][]" value="1" checked>
+					<span class="cus-table-go"></span> Visualizada 
+				</div>
+				<div class="checkbox-inline">
+					<input type="checkbox" name="filter[relato]" value="1">
+					<span class="cus-pencil-go"></span> Com Breve Relato 
+				</div>
+				<br>
+				<div class="checkbox-inline">
+					<input type="checkbox" name="filter[transcricao]" value="1">
+					<span class="cus-user-go"></span> Com Transcrição
+				</div>
+				<div class="checkbox-inline">
+					<input type="checkbox" name="filter[observacao]" value="1">
+					<span class="cus-report-go"></span> Com Observação
+				</div>
+			</div>
+		</div>
+		<!-- Alvos -->
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Alvos:</label>
+			<div class="col-sm-10">
+				<select name="filter[alvos_id][]" multiple class="form-control">
+				</select>
+			</div>
+		</div>
+		<!-- Interlocutores -->
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Interlocutores:</label>
+			<div class="col-sm-10">
+				<select name="filter[contatos_id][]" multiple class="form-control">
+				</select>
+			</div>
+		</div>
+		<!-- Palavras -->
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Palavras:</label>
+			<div class="col-sm-10">
+				<input name="filter[palavra]" type="text" class="form-control input-sm" value="">
+			</div>
+		</div>
+		<!-- Tamanho -->
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Tamanho:</label>
+			<div class="col-sm-3">
+				<select name="filter[tamanho_tipo]" class="form-control">
+					<option value="0">Áudio</option>
+					<option value="1">SMS</option>
+				</select>
+			</div>
+			<label class="col-sm-1 control-label">Entre:</label>
+			<div class="col-sm-2">
+				<input name="filter[tamanho_inicio]" type="text" class="form-control input-sm" value="">
+			</div>
+			<label class="col-sm-1 control-label">e</label>
+			<div class="col-sm-2">
+				<input name="filter[tamanho_fim]" type="text" class="form-control input-sm" value="">
+			</div>
+		</div>
+
+	</div>
+
+</div>
+
+
+<!-- Ajusta os itens de navegação -->
+<script>
+	// Botão voltar
+	$(".btn-prev").removeClass("disabled").off().on( 'click', SiMCE.functions.loadMenu );
+	// Botão avançar
+	$(".btn-next").addClass("hidden");
+	// Botão gerar
+	$(".btn-run").removeClass("hidden");
+
+	// Seleciona primeira aba
+	$(".nav-tabs-form a:first").tab("show");
+	
+	// Carrega a lista de alvos
+	setTimeout( function() {
+		SiMCE.functions.getTargetList();
+		SiMCE.functions.getContactList();
+	}, 100);
+
+</script>

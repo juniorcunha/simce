@@ -1,0 +1,75 @@
+{% extends 'Core/Views/modules.twig.html' %}
+{% import  'Core/Views/components.twig.html' as ui %}
+
+{% block title %}Dicionário de Expressões{% endblock %}
+{% block description %}Permite realizar análise textual das interceptações por meio de padrões configuráveis{% endblock %}
+
+{% block content %}
+
+	<form id="form-ontologias" class="form-horizontal" role="form">
+
+		<div class="form-group">
+			<div class="col-sm-6">
+				<b>Texto para análise:</b>
+			</div>
+			<div class="col-sm-6">
+				<b>Dicionário:</b>
+			</div>
+		</div>
+		<div class="form-group" style="margin-top: -10px;">
+			<div class="col-sm-6">
+				<textarea name="data[texto]" class="form-control" rows="3"></textarea>
+			</div>
+			<div id="jstree_div" class="col-sm-6"></div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-1" style="margin-top: 10px;"><b>Período:</b></div>
+			<div class="col-sm-2">{{ ui.form_date_picker( "data[inicio]", 'now'|date_modify('-1 month')|date('d/m/Y') ) }}</div>
+			<div class="col-sm-1" style="margin-top: 10px;">até</div>
+			<div class="col-sm-2">{{ ui.form_date_picker( "data[fim]", 'now'|date('d/m/Y') ) }}</div>
+			<div class="col-sm-1" style="margin-top: 2px;"><button type="button" class="btn btn-default btn-sm btn-add"><span class="cus-page-white-find"></span> Gerar&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button></div>
+		</div>
+		
+		<hr>
+		<div class="form-group">
+			<div class="col-sm-6">
+				<b>Resultado:</b>
+			</div>
+		</div>
+		<div class="form-group" style="margin-top: -10px;">
+			<div class="col-sm-12">
+				<table id="datagrid" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>#ID</th>
+							<th>Relato / Transcrição</th>
+							<th>Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		
+	</form>
+	
+	<script>
+		$('#jstree_div').jstree({
+			plugins: ['checkbox','types','state'],
+			core:    {
+				animation: 100,
+				data : [
+					{ id: 1, text: 'Drogas', state: { selected: false }, icon: 'glyphicon glyphicon-list' },
+					{ id: 2, text: 'Armas', state: { selected: false }, icon: 'glyphicon glyphicon-list' },
+					{ id: 3, text: 'Compradores e Distribuidores', state: { selected: false }, icon: 'glyphicon glyphicon-list' }
+				]
+			},
+			checkbox: {
+				keep_selected_style: false,
+				whole_node:          false
+			}
+		});
+	</script>
+
+{% endblock %}

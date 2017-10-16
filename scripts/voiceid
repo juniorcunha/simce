@@ -1,0 +1,63 @@
+#!/usr/bin/python
+#
+# SiMCE VoiceID
+# 
+# Script que vai analisar os registros e identificar as vozes
+# 
+# @author Junior Cunha <juniorcunha@dad.eng.br>
+# @version 1.0
+# @copyright (c) 2014, dad Engenharia
+#
+
+from voiceid.sr import Voiceid, utils
+from voiceid.db import GMMVoiceDB
+from datetime import datetime
+import sys
+
+# Obtem as variaveis de entrada
+db_path = sys.argv[1]
+file_path = sys.argv[2]
+
+# Inicializa o banco de vozes
+db = GMMVoiceDB(db_path)
+
+# Processa o audio informado
+v = Voiceid(db, file_path)
+#v = Voiceid.from_json_file(db,'../records/3/1/1/2136_.json');
+
+# Extrai os contatos do arquivo
+v.extract_speakers(False,True)
+
+# Verifica os audios e os arquivos wav
+#count = 1
+for c in v.get_clusters():
+	cluster = v.get_cluster(c)
+	#print cluster.get_best_speaker()
+	#print len(cluster.get_best_five())
+	#for s in cluster.get_best_five():
+	#	print s[0]
+	if "unknown" in cluster.get_speaker():
+		now = datetime.now()
+		speaker = now.strftime("%H%M%S%f")
+		cluster.set_speaker(speaker);
+	print(cluster.get_speaker() + "|"),
+	print(cluster.wave),
+	for seg in cluster.get_segments():
+		print "|%s-%s" % (
+			utils.humanize_time(float(seg.get_start()) / 100),
+			utils.humanize_time(float(seg.get_end()) / 100)),
+	#cluster.print_segments()
+	#speaker = 'SPEAKER' + `count`
+	#cluster.set_speaker(speaker);
+	#count = count + 1
+	print
+
+#c1 = v.get_cluster('S1')
+#c1.set_speaker('Daniel')
+
+#c5 = v.get_cluster('S5')
+#c5.set_speaker('Carlitos')
+
+# Atualiza o banco
+#v.update_db()
+v.write_json();

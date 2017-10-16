@@ -1,0 +1,21 @@
+{% extends 'Core/Views/modules.twig.html' %}
+{% import  'Core/Views/components.twig.html' as ui %}
+
+{% block title %}Cronologia de Eventos{% endblock %}
+{% block description %}Visualização detalhada e interativa dos principais eventos da operação{% endblock %}
+
+{% block content %}
+
+	<button type="button" class="btn btn-default btn-sm btn-add" onclick="SiMCE.functions.showForm();"><span class="cus-add"></span> Adicionar Elemento</button>
+	<br>
+
+	<div id="timeline-embed"></div>
+
+	<!-- Eventos iniciais -->
+	<script>
+		setTimeout( function() {
+			SiMCE.functions.loadTimeline();
+		}, 100);
+	</script>
+	
+{% endblock %}

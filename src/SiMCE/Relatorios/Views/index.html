@@ -1,0 +1,26 @@
+{% extends 'Core/Views/modules.twig.html' %}
+{% import  'Core/Views/components.twig.html' as ui %}
+
+{% block title %}Relatórios{% endblock %}
+{% block description %}Visualização e composição de relatórios gerenciais e detalhados sobre as operações{% endblock %}
+
+{% block content %}
+
+	<form id="form-relatorio" class="form-horizontal" role="form" style="padding-left: 30px; max-height: 450px; overflow-y: scroll; overflow-x: hidden;">
+		
+	</form>
+
+	<br>
+	<button type="button" class="btn-pdf btn btn-default btn-sm pull-right hidden"><span class="simce-pdf"></span> Gerar PDF</button>
+	<button type="button" class="btn-run btn btn-default btn-sm pull-right hidden"><span class="cus-report-go"></span> Carregar Relatório</button>
+	<button type="button" class="btn-next btn btn-default btn-sm pull-right"><span class="cus-resultset-next"></span> Avançar</button>
+	<button type="button" class="btn-prev btn btn-default btn-sm pull-right disabled"><span class="cus-resultset-previous"></span> Voltar&nbsp;&nbsp;&nbsp;</button>	
+	
+	<!-- Carrega o menu de relatórios -->
+	<script>
+		setTimeout( function() {
+			SiMCE.functions.loadMenu();
+		}, 100 );
+	</script>
+	
+{% endblock %}

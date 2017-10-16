@@ -1,0 +1,103 @@
+{% extends 'Core/Views/modal_form.twig.html' %}
+{% import  'Core/Views/components.twig.html' as ui %}
+
+{% block title %}{% endblock %}
+{% block style %}style="width: 600px;"{% endblock %}
+
+{% block content %}
+
+	<div class="progress progress-striped active">
+		<div id="progress-export" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+			0%
+		</div>
+	</div>
+	<center><img src="assets/img/loader.gif">&nbsp;&nbsp;<span id="text-export">Iniciando...</span></center>
+	<center><i><small>
+		<table>
+			<tr>
+				<td>Arquivo: </td>
+				<td id="name-export"></td>
+			</tr>
+			<tr>
+				<td>Registros: </td>
+				<td><span id="total-export">0</span> registro(s) de {{total}}</td>
+			</tr>
+			<tr>
+				<td>Tamanho: </td>
+				<td id="size-export"></td>
+			</tr>
+		</table>
+	</small></center>
+
+	<script>
+
+		// Variáveis de controle
+		var proc         = "{{status}}";
+		var totalRecords = {{total}};
+		var cancel       = 0;
+
+		// Inicia o loop para verificação do status
+		function getStatus( proc ) {
+
+			var url = SiMCE.moduleURL + "statusExport/";
+			SiMCE.ajaxRequest(
+				"POST",
+				url,
+				{ proc: proc },
+				function( data, textStatus, jqXHR ) {
+					if (data.success === true) {
+
+						if (data.content === null || !data.content.hasOwnProperty('text')) {
+							setTimeout( function() {
+								getStatus( proc );
+							},1000);
+							return;
+						}
+
+
+						// Atualiza os textos
+						$("#text-export").text( data.content.text );
+						$("#name-export").text( data.content.file );
+						$("#total-export").text( data.content.current );
+						$("#size-export").text( data.content.size );
+
+						// Atualiza a barra de progresso
+						var perc = parseInt( (data.content.current * 100) / totalRecords );
+						$("#progress-export").attr("aria-valuenow", perc);
+						$("#progress-export").width(perc + "%");
+						$("#progress-export").html(perc + "%");
+
+						// Verifica se continua verificando o status
+						if ( data.content.status == "p" && cancel == 0) {
+							setTimeout( function() {
+								getStatus( proc );
+							},1000);
+						} else if ( data.content.status == "c" ) {
+
+							// Esconde a janela
+							$("#app-modal").modal("hide");
+							
+							// Força o download
+							window.location = "/simce/cache/" + data.content.file;
+
+						}
+					}
+				}
+			);
+
+		}
+
+		// Cancela o backup e finaliza o processo
+		function cancelStatus() {
+			cancel = 1;
+		}
+
+		getStatus( proc );
+
+	</script>
+
+{% endblock %}
+
+{% block footer %}
+	<button type="button" class="btn btn-default" data-dismiss="modal" onclick="cancelStatus();"><span class="cus-delete"></span> Cancelar</button>
+{% endblock %}

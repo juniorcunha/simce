@@ -1,0 +1,42 @@
+#
+# SiMCE - Configuração NRPE
+# 
+
+log_facility=daemon
+pid_file=/var/run/nrpe.pid
+server_port=5666
+nrpe_user=nagios
+nrpe_group=nagios
+allowed_hosts=127.0.0.1,25.102.214.74,177.19.162.246,192.168.1.2,192.168.1.203
+dont_blame_nrpe=0
+allow_bash_command_substitution=0
+debug=0
+command_timeout=60
+connection_timeout=300
+
+#
+# Comandos Nagios
+#
+command[load]=/usr/lib64/nagios/plugins/check_load -w 12,12,12 -c 24,24,24
+command[swap]=/usr/lib64/nagios/plugins/check_swap -w 50% -c 30%
+command[check_/]=/usr/lib64/nagios/plugins/check_disk -w 20% -c 10% -p /
+command[check_/opt/simce]=/usr/lib64/nagios/plugins/check_disk -w 20% -c 10% -p /opt/simce
+command[zombie_procs]=/usr/lib64/nagios/plugins/check_procs -w 5 -c 10 -s Z
+command[proc_sshd]=/usr/lib64/nagios/plugins/check_procs -w 1: -c 1: -C sshd
+command[proc_asterisk]=/usr/lib64/nagios/plugins/check_procs -w 1: -c 1: -C asterisk
+command[proc_httpd]=/usr/lib64/nagios/plugins/check_procs -w 1: -c 1: -C httpd
+command[proc_mysqld]=/usr/lib64/nagios/plugins/check_procs -w 1: -c 1: -C mysqld
+command[proc_voice_queue]=/usr/lib64/nagios/plugins/check_procs -w 1: -c 1: -a 'simce-voice-queue'
+command[proc_voice_queue_large]=/usr/lib64/nagios/plugins/check_procs -w 1: -c 1: -a 'simce-voice-queue-large'
+command[proc_voice_recorder]=/usr/lib64/nagios/plugins/check_procs -w 1: -c 1: -a 'simce-voice-recorder'
+
+#
+# Comandos SiMCE
+#
+command[khomp_channels]=/opt/simce/nagios/check_active_calls.php
+command[khomp_driver]=/opt/simce/nagios/check_driver.php
+command[khomp_ebs]=/opt/simce/nagios/check_ebs.php
+command[khomp_e1_1]=/opt/simce/nagios/check_e1.php 00 'Link 1'
+command[khomp_e1_2]=/opt/simce/nagios/check_e1.php 01 'Link 2'
+command[simce_voice_queue_size]=/opt/simce/nagios/check_voice_queue_size.php
+command[simce_recorder_queue_size]=/opt/simce/nagios/check_recorder_queue_size.php

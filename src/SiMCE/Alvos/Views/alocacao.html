@@ -1,0 +1,83 @@
+{% import  'Core/Views/components.twig.html' as ui %}
+
+<div class="form-group">
+	<label class="col-sm-1 control-label">Início:</label>
+	<div class="col-sm-4 col-sm-offset-1">
+		{% if data.inicio %}
+			{% if date(data.orig_inicio) < date() %}
+				{{ ui.form_date_picker( "alocacao[inicio]", data.orig_inicio|date('d/m/Y'), 1 ) }}
+			{% else %}
+				{{ ui.form_date_picker_start( "alocacao[inicio]", data.orig_inicio|date('d/m/Y'), 'now'|date('d/m/Y'), max_date|date('d/m/Y') ) }}
+			{% endif %}
+		{% else %}
+			{{ ui.form_date_picker_start( "alocacao[inicio]", 'now'|date('d/m/Y'), 'now'|date('d/m/Y'), max_date|date('d/m/Y') ) }}
+		{% endif %}
+	</div>
+	<label class="col-sm-1 control-label">Fim:</label>
+	<div class="col-sm-4">
+		{% if data.fim %}
+			{% if date(data.orig_fim) < date() %}
+				{{ ui.form_date_picker( "alocacao[fim]", data.orig_fim|date('d/m/Y'), 1 ) }}
+			{% else %}
+				{{ ui.form_date_picker_start( "alocacao[fim]", data.orig_fim|date('d/m/Y'), 'now'|date('d/m/Y'), max_date|date('d/m/Y') ) }}
+			{% endif %}
+		{% else %}
+			{{ ui.form_date_picker_start( "alocacao[fim]", 'now'|date_modify('+15 day')|date('d/m/Y'), 'now'|date('d/m/Y'), max_date|date('d/m/Y') ) }}
+		{% endif %}
+	</div>
+</div>
+<div class="form-group" style="margin-top: -6px;">
+	<label class="col-sm-1 control-label">Identificação:</label>
+	<div class="col-sm-4 col-sm-offset-1">
+		{% if data.identificacao %}
+			<input name="alocacao[identificacao]" type="text" class="form-control phone-form" value="{{ data.identificacao }}">
+		{% else %}
+			<input name="alocacao[identificacao]" type="text" class="form-control phone-form" value="">
+		{% endif %}
+	</div>
+	<label class="col-sm-1 control-label">Ofício:</label>
+	<div class="col-sm-4">
+		{% if data.oficio %}
+			<input name="alocacao[oficio]" type="text" class="form-control" value="{{ data.oficio }}">
+		{% else %}
+			<input name="alocacao[oficio]" type="text" class="form-control" value="">
+		{% endif %}
+	</div>
+</div>
+<div class="form-group" style="margin-top: -6px;">
+	<label class="col-sm-1 control-label">Desvio:</label>
+	<div class="col-sm-4 col-sm-offset-1">
+		<select name="alocacao[desvio_para]" class="form-control input-sm">
+			<option value="0">Desabilitado</option>
+			{% for usuario in usuarios %}
+				<option value="{{ usuario.id }}" {% if data.desvio_para == usuario.id %}selected{% endif %}>{{ usuario.nome }}</option>
+			{% endfor %}
+		</select>
+	</div>
+	<label class="col-sm-1 control-label">Via:</label>
+	<div class="col-sm-4">
+		<select name="alocacao[desvio_via]" class="form-control input-sm">
+			<option value="0">Desabilitado</option>
+			<option value="E" {% if data.desvio_via == 'E' %}selected{% endif %}>Fluxo E1</option>
+			{% for recurso in recursos %}
+				<option value="{{ recurso.id }}"  {% if data.desvio_via == recurso.id %}selected{% endif %}>{{ recurso.nome }}</option>
+			{% endfor %}
+		</select>
+	</div>
+</div>
+<div style="margin-top: -6px;">
+	{% if index is not null %}
+		<button type="button" class="btn btn-default" onclick="SiMCE.functions.updateAlocation({{ index }});"><span class="cus-page-edit"></span> Atualizar</button>
+		<button type="button" class="btn btn-default" onclick="SiMCE.functions.cancelAlocation();"><span class="cus-delete"></span> Cancelar</button>
+	{% else %}
+		<button type="button" class="btn btn-default" onclick="SiMCE.functions.addAlocation();"><span class="cus-add"></span> Adicionar</button>
+		<button type="button" class="btn btn-default" onclick="SiMCE.functions.cancelAlocation();"><span class="cus-delete"></span> Cancelar</button>
+	{% endif %}
+</div>
+<br>
+
+<script>
+	setTimeout( function() {
+		$(".phone-form").inputmask("(99) 99999-9999");
+	}, 500);
+</script>
